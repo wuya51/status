@@ -29,6 +29,7 @@
     "singleQuote": true
   },
   "dependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.4.5",
     "axios": "^1.5.0"
   }
 }

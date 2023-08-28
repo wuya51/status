@@ -1,10 +1,40 @@
 <script>
-  import { base } from "$app/paths";
+  import { base } from "$app/paths"
+    import { onMount } from "svelte"
+  // import { onMount } from "svelte"
+  import {getIndex, makeUrl} from "./api"
+
+  let url = "none"
+  let index;
+  // onMount
+  onMount(() => {
+    // window.alert("hi")
+    // status = api.getIndex()
+    url = makeUrl()
+    getIndex()
+    .then((r) => {
+      index = r
+    })
+
+    // api.get("")
+    // .then((r) => {
+    //   window.alert(r)
+    //   index = r
+    // })
+
+  })
 </script>
 
 <h1>status</h1>
-<p>Deployed to GitHub Pages</p>
+
 <p>
-  Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation
+  URL: {url}
+
+
+
+</p>
+
+<p>
+  Index: {JSON.stringify(index)}
 </p>
 <a href="{base}/about">About</a>
