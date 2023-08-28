@@ -1,40 +1,67 @@
 <script>
-  import { base } from "$app/paths"
-    import { onMount } from "svelte"
-  // import { onMount } from "svelte"
-  import {getIndex, makeUrl} from "./api"
+  import 'uikit/dist/css/uikit.min.css'
 
-  let url = "none"
-  let index;
-  // onMount
+  import { base } from '$app/paths'
+  import { onMount } from 'svelte'
+  import { refresh, makeUrl, indexStore, validatorList } from './api'
+
+  let url = makeUrl()
+
   onMount(() => {
-    // window.alert("hi")
-    // status = api.getIndex()
-    url = makeUrl()
-    getIndex()
-    .then((r) => {
-      index = r
-    })
+    refresh()
 
-    // api.get("")
-    // .then((r) => {
-    //   window.alert(r)
-    //   index = r
-    // })
-
+    setInterval(
+      refresh,
+      50000 // 5 secs
+    )
   })
 </script>
 
-<h1>status</h1>
+<main class="uk-container">
+  <h1>status</h1>
 
-<p>
-  URL: {url}
+  <p>
+    api url: {url}
+  </p>
+
+<div class="container">
+    <div class="uk-flex-center" uk-grid>
+    <div>
+      <div class="uk-card uk-card-default uk-card-body">
+        <h5 class="uk-card-title">metadata</h5>
+        {#if $indexStore}
+          <p>chain id: {$indexStore.chain_id}</p>
+          <p>epoch: {$indexStore.epoch}</p>
+          <p>timestamp: {$indexStore.ledger_timestamp}</p>
+          <p>block height: {$indexStore.block_height}</p>
+        {/if}
+      </div>
+    </div>
+
+      <div>
+        {#if $validatorList}
+        <div class="uk-card uk-card-primary uk-card-body">
+          <h3 class="uk-card-title">Validators</h3>
+          <div>
+            {#each $validatorList as v}
+              <div>{v}</div>
+            {/each}
+          </div>
+        </div>
+            {/if}
+      </div>
+    <div>
+      <div class="uk-card uk-card-default uk-card-body">
+        <h3 class="uk-card-title">Secondary</h3>
+        <span> add more views here</span>
+      </div>
+    </div>
+  </div>
+
+</div>
 
 
-
-</p>
-
-<p>
-  Index: {JSON.stringify(index)}
-</p>
-<a href="{base}/about">About</a>
+  <div>
+    <a href="{base}/about">Example Route</a>
+  </div>
+</main>

@@ -1824,6 +1824,11 @@ typescript@^5.0.3:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.2.2.tgz#5ebb5e5a5b75f085f22bc3f8460fba308310fa78"
   integrity sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==
 
+uikit@^3.16.26:
+  version "3.16.26"
+  resolved "https://registry.yarnpkg.com/uikit/-/uikit-3.16.26.tgz#90c2cde94626546c42d0b7c8f1bedafeedb909b6"
+  integrity sha512-5NCaHqgYIzTVDMxix9tUb4pJn478GdIxEodWuWy/eMf3mi7EWZPyVQxPEos71H0hrr7xC6i0TK6tjOSfF7gkOA==
+
 undici@~5.23.0:
   version "5.23.0"
   resolved "https://registry.yarnpkg.com/undici/-/undici-5.23.0.tgz#e7bdb0ed42cebe7b7aca87ced53e6eaafb8f8ca0"
