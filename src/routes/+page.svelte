@@ -15,6 +15,7 @@
    const apiConfig = await initApi();
     url = apiConfig.apiUrl;
     note = apiConfig.note;
+
     refresh()
 
     setInterval(
@@ -54,3 +55,4 @@
   </div>
 
 </main>
+
