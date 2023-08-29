@@ -11,7 +11,7 @@ export const getIndex = async () => {
     const response = await api.get('');
     return response.data;
   } catch (error) {
-    console.error(`Failed to get index: ${error}`);
+    console.error(`Failed to get index: ${error.message}`);
     throw error;
   }
 }
@@ -21,7 +21,7 @@ export const getView = async (payload: ViewObj) => {
     const response = await api.post('/view', payload);
     return response.data;
   } catch (error) {
-    console.error(`Failed to get view: ${error}`);
+    console.error(`Failed to get view: ${error.message}`);
     throw error;
   }
 }

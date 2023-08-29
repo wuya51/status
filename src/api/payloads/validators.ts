@@ -14,12 +14,12 @@ export const eligible_validators_payload: ViewObj = {
 
 export const validator_vouchers_payload = (address: string): ViewObj => ({
   function: '0x1::vouch::get_buddies',
-  type_arguments: ['address'],
-  arguments: [address],  // Use the dynamic argument
+  type_arguments: [],
+  arguments: [address],  
 });
 
 export const validator_valid_vouchers_payload = (address: string): ViewObj => ({
   function: '0x1::vouch::get_buddies_valid',
-  type_arguments: ['address'],
-  arguments: [address],  // Use the dynamic argument
+  type_arguments: [],
+  arguments: [address],  
 });

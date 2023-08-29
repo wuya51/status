@@ -10,6 +10,20 @@ export interface IndexData {
   git_hash: string;
 }
 
+export interface SystemInfo {
+  fees: number | string;  
+  epoch_duration: string; 
+  chain_id: number;
+  epoch: string;
+  ledger_version: string;
+  oldest_ledger_version: string;
+  ledger_timestamp: string;
+  node_role: string;
+  oldest_block_height: string;
+  block_height: string;
+  git_hash: string;
+}
+
 export interface ViewObj {
     function: string,
     type_arguments: string[],
@@ -28,4 +42,6 @@ export interface ValidatorUniverse {
   eligible_validators: string[];  // Array of addresses
   validators: Validator[];
 }
+
+
 

@@ -1,9 +1,12 @@
 <script>
   import 'uikit/dist/css/uikit.min.css'
-
+  
   import { base } from '$app/paths'
   import { onMount } from 'svelte'
-  import { refresh, makeUrl, indexStore, validatorList } from './api'
+  import { makeUrl } from '../constants'
+  import { refresh } from '../store'
+  import SystemInfo from '$lib/SystemInfo.svelte';  
+  import Validators from '$lib/Validators.svelte';  
 
   let url = makeUrl()
 
@@ -12,7 +15,7 @@
 
     setInterval(
       refresh,
-      50000 // 5 secs
+      50000 // 50 secs
     )
   })
 </script>
@@ -24,42 +27,26 @@
     api url: {url}
   </p>
 
-<div class="container">
-    <div class="uk-flex-center" uk-grid>
-    <div>
-      <div class="uk-card uk-card-default uk-card-body">
-        <h5 class="uk-card-title">metadata</h5>
-        {#if $indexStore}
-          <p>chain id: {$indexStore.chain_id}</p>
-          <p>epoch: {$indexStore.epoch}</p>
-          <p>timestamp: {$indexStore.ledger_timestamp}</p>
-          <p>block height: {$indexStore.block_height}</p>
-        {/if}
-      </div>
-    </div>
-
+  <div class="container">
+    <div uk-grid>
       <div>
-        {#if $validatorList}
-        <div class="uk-card uk-card-primary uk-card-body">
-          <h3 class="uk-card-title">Validators</h3>
-          <div>
-            {#each $validatorList as v}
-              <div>{v}</div>
-            {/each}
-          </div>
+        <div class="uk-card uk-card-default uk-card-body">
+          <SystemInfo />  
         </div>
-            {/if}
       </div>
-    <div>
-      <div class="uk-card uk-card-default uk-card-body">
-        <h3 class="uk-card-title">Secondary</h3>
-        <span> add more views here</span>
+      <div>
+        <div class="uk-card uk-card-primary uk-card-body">
+          <Validators />  
+        </div>
+      </div>
+      <div>
+        <div class="uk-card uk-card-default uk-card-body">
+          <h3 class="uk-card-title">Secondary</h3>
+          <span> add more views here</span>
+        </div>
       </div>
     </div>
   </div>
-
-</div>
-
 
   <div>
     <a href="{base}/about">Example Route</a>
