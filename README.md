@@ -1,3 +1,6 @@
+# Status
+A tool to check the status of a OL network. This is used as a test tool to easily and quickly verify changes within the network. 
+
 
 ## To Deploy
 ```
@@ -13,9 +16,10 @@ yarn
 yarn dev
 
 ```
-## API
-### System
 
+## API Views
+
+### System
 - transaction fees
 
 #### block info
@@ -25,13 +29,11 @@ yarn dev
 #### Governance
 
 ### Validators
-
 #### All Validators
 - eligible validators
 
 #### balance info
 - wallet balances 
-
 
 #### vouch
 - validator vouches
@@ -41,8 +43,6 @@ yarn dev
 - validator is in jail
 - validator jail reputataion
 - validator jail buddies
-
-
 
 
 
