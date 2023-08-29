@@ -27,25 +27,31 @@ export const getIndex = async () => {
 
 
 
-const validator_payload: ViewObj = {
+const VALIDATOR_PAYLOAD: ViewObj = {
   function: '0x1::stake::get_current_validators',
   type_arguments: [],
   arguments: [],
 }
 
+const VDF_DIFFICULTY: ViewObj = {
+  function: '0x1::tower_state::get_difficulty',
+  type_arguments: [],
+  arguments: [],
+}
+
 export const getView = async (payload: ViewObj) => {
-  return api.post('/view', payload).then((r) => {
-    console.log(r)
-    validatorList.set(r.data[0])
-    r.data
-  })
+  return api.post('/view', payload).then((r) => r.data)
 }
 
 export const refresh = () => {
   getIndex()
-  getView(validator_payload)
+  getView(VALIDATOR_PAYLOAD)
+    .then((r) => validatorList.set(r[0]))
+  getView(VDF_DIFFICULTY)
+    .then((r) => vdfDifficulty.set(r))
   // ... add more views here
 }
 
-export const validatorList = writable<[]>()
-export const indexStore = writable<object>()
+export let validatorList = writable<[]>()
+export let vdfDifficulty = writable<[]>()
+export let indexStore = writable<object>()
