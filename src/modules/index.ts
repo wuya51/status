@@ -1,5 +1,5 @@
-import { api } from "./api"
-import { indexStore } from "./queries"
+import { api } from './api'
+import { indexStore } from './queries'
 
 export const getIndex = async () => {
   return api.get('').then((r) => {

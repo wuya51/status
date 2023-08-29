@@ -1,6 +1,5 @@
-import { writable } from "svelte/store"
-import { api, type ViewObj } from "../modules/api"
-
+import { writable } from 'svelte/store'
+import { api, type ViewObj } from '../modules/api'
 
 // get the index with metadata
 export const indexStore = writable<object>()
@@ -26,5 +25,3 @@ export const VDF_DIFFICULTY: ViewObj = {
   type_arguments: [],
   arguments: [],
 }
-
-
