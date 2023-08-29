@@ -2,7 +2,12 @@
   import 'uikit/dist/css/uikit.min.css'
 
   import { onMount } from 'svelte'
-  import { refresh, makeUrl, indexStore, validatorList } from '../modules/api'
+  import { refresh } from '../modules/refresh'
+  import { indexStore } from '../modules/index'
+  import { validatorList } from '../modules/query_view'
+  import { makeUrl } from '../modules/api'
+  import {apiError} from '../modules/error'
+
   import Card from '../ui/Card.svelte'
 
   let url = makeUrl()
@@ -23,6 +28,9 @@
   <p>
     api url: {url}
   </p>
+  {#if $apiError}
+    {$apiError}
+  {/if}
 
   <div class="uk-flex">
     {#if $indexStore}

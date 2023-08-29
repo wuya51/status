@@ -1,14 +1,5 @@
 import { writable } from 'svelte/store'
-import { api, type ViewObj } from '../modules/api'
-
-// get the index with metadata
-export const indexStore = writable<object>()
-export const getIndex = async () => {
-  return api.get('').then((r) => {
-    indexStore.set(r.data)
-    r.data
-  })
-}
+import type { ViewObj } from './api'
 
 // get the validator list
 export const validatorList = writable<[]>()
