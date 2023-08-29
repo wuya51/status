@@ -1,7 +1,6 @@
 <script>
   import 'uikit/dist/css/uikit.min.css'
 
-  import { base } from '$app/paths'
   import { onMount } from 'svelte'
   import { refresh, makeUrl, indexStore, validatorList } from '../modules/api'
   import Card from '../ui/Card.svelte'
