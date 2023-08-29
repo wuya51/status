@@ -3,14 +3,18 @@
   
   import { base } from '$app/paths'
   import { onMount } from 'svelte'
-  import { makeUrl } from '../constants'
+  import { initApi } from '../api'
   import { refresh } from '../store'
   import SystemInfo from '$lib/SystemInfo.svelte';  
   import Validators from '$lib/Validators.svelte';  
 
-  let url = makeUrl()
+  let url;
+  let note;
 
-  onMount(() => {
+  onMount( async () => {
+   const apiConfig = await initApi();
+    url = apiConfig.apiUrl;
+    note = apiConfig.note;
     refresh()
 
     setInterval(
@@ -25,6 +29,7 @@
 
   <p>
     api url: {url}
+    note: {note}
   </p>
 
   <div class="container">
@@ -48,7 +53,4 @@
     </div>
   </div>
 
-  <div>
-    <a href="{base}/about">Example Route</a>
-  </div>
 </main>
