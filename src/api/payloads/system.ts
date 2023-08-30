@@ -17,5 +17,3 @@ export const vdf_difficulty: ViewObj = {
   type_arguments: [],
   arguments: [],
 }
-
-
