@@ -1,11 +1,6 @@
 import { getIndex } from './index'
 import { getView } from './api'
-import {
-  VALIDATOR_PAYLOAD,
-  VDF_DIFFICULTY,
-  validatorList,
-  vdfDifficulty,
-} from './query_view'
+import { VALIDATOR_PAYLOAD, VDF_DIFFICULTY, validatorList, vdfDifficulty } from './query_view'
 
 export const refresh = () => {
   getIndex()
