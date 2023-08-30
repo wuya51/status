@@ -11,3 +11,11 @@ export const epoch_length_payload: ViewObj = {
   type_arguments: [],
   arguments: [],
 }
+
+export const vdf_difficulty: ViewObj = {
+  function: '0x1::tower_state::get_difficulty',
+  type_arguments: [],
+  arguments: [],
+}
+
+

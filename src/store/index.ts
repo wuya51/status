@@ -98,15 +98,20 @@ export const setValidators = async () => {
 
 export const getSystemInfo = async () => {
   try {
+    // TODO(zoz): it would be better to let these be async and parallel
     const fees = await getView(systemPayloads.fees_collected_payload)
     const epochResponse = await getView(systemPayloads.epoch_length_payload)
+    const vdfDifficulty = await getView(systemPayloads.vdf_difficulty)
+
     const duration = moment.duration(Number(epochResponse[0]), 'seconds') // Cast to Number
     const epoch = `${Math.floor(duration.asHours())} hrs : ${duration.minutes()} mins`
     const indexData = get(indexDataStore)
 
+    // TODO(zoz): make this an interface
     const newSystemInfo = {
       fees: fees[0],
       epoch_duration: epoch,
+      vdf: vdfDifficulty,
       ...indexData,
     }
 
@@ -122,9 +127,10 @@ export const getSystemInfo = async () => {
 // Function to refresh all data
 export const refresh = async () => {
   try {
-    await getIndexData()
-    await getSystemInfo()
-    await setValidators()
+    // this should be done async, without the await
+    getIndexData()
+    getSystemInfo()
+    setValidators()
   } catch (error) {
     console.error(`Failed to refresh: ${error}`)
   }

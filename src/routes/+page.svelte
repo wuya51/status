@@ -19,7 +19,7 @@
 
     setInterval(
       refresh,
-      50000 // 50 secs
+      5000 // 5 secs
     )
   })
 </script>

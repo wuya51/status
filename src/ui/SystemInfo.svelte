@@ -23,6 +23,10 @@
         <p>Git Hash: {$systemInfo.git_hash}</p>
         <p>Epoch Duration: {$systemInfo.epoch_duration}</p>
       </div>
+      <div>
+        <p>VDF Difficulty: {$systemInfo.vdf[0]}</p>
+        <p>VDF Security: {$systemInfo.vdf[1]}</p>
+      </div>
     {:else}
       <p>Loading...</p>
     {/if}
