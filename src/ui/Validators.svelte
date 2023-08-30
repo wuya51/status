@@ -9,7 +9,7 @@
     <ul>
       {#each $validatorUniverse.validators as validator}
         <li>
-          <h3>{trimName(validator.address)}</h3>
+          <h3>{validator.address}</h3>
           {#if validator.activeVouchers}
             <p>Active Vouchers: {validator.activeVouchers.join(", ")}</p>
           {:else}
