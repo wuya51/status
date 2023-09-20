@@ -81,7 +81,7 @@ export const setValidators = async () => {
         address,
         activeVouchers: activeVouchersResponse.data,
         inactiveVouchers,
-        balance: balanceResponse.data || 0,
+        balance: balanceResponse.data,
       }
 
       currentUniverse.validators.push(validator)
@@ -99,9 +99,12 @@ export const setValidators = async () => {
 export const getSystemInfo = async () => {
   try {
     // TODO(zoz): it would be better to let these be async and parallel
-    const fees = await getView(systemPayloads.fees_collected_payload)
-    const epochResponse = await getView(systemPayloads.epoch_length_payload)
-    const vdfDifficulty = await getView(systemPayloads.vdf_difficulty)
+    let requests = [
+      getView(systemPayloads.fees_collected_payload),
+      getView(systemPayloads.epoch_length_payload),
+      getView(systemPayloads.vdf_difficulty)
+    ]
+    const [fees, epochResponse, vdfDifficulty] = await Promise.all(requests)
 
     const duration = moment.duration(Number(epochResponse[0]), 'seconds') // Cast to Number
     const epoch = `${Math.floor(duration.asHours())} hrs : ${duration.minutes()} mins`

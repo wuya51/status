@@ -30,11 +30,15 @@ export interface ViewObj {
   arguments: string[]
 }
 
+export interface SlowWalletBalance {
+  unlocked: number,
+  total: number,
+}
 export interface Validator {
   address: string
   activeVouchers: string[] // Array of addresses
   inactiveVouchers: string[] // Array of addresses
-  balance: number
+  balance: SlowWalletBalance
 }
 
 export interface ValidatorUniverse {
