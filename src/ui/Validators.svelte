@@ -1,30 +1,18 @@
-<script >
-  import { validatorUniverse } from '../store';
+<script>
+  import { onMount } from 'svelte'
+  import { valDataStore } from '../store'
   import Card from './Card.svelte'
+  import ValidatorTable from './ValidatorTable.svelte'
+  import ValidatorUniverse from './ValidatorUniverse.svelte'
+
+  onMount(() => {})
 </script>
 
-<Card title="Validators" style="primary">
-  <div slot="body">
-  {#if $validatorUniverse.validators.length > 0}
-    <ul>
-      {#each $validatorUniverse.validators as validator}
-        <li>
-          <h3>{validator.address}</h3>
-          {#if validator.activeVouchers}
-            <p>Active Vouchers: {validator.activeVouchers.join(", ")}</p>
-          {:else}
-            <p>Active Vouchers: None</p>
-          {/if}
-          {#if validator.inactiveVouchers}
-            <p>Inactive Vouchers: {validator.inactiveVouchers.join(", ")}</p>
-          {:else}
-            <p>Inactive Vouchers: None</p>
-          {/if}
-          <p>Balance: {validator.balance}</p>
-        </li>
-      {/each}
-    </ul>
-  {:else}
-    <p>Loading...</p>
-  {/if}
+<main>
+  <Card title="Validators" style="primary">
+    <div slot="body">
+      <ValidatorUniverse />
+      <ValidatorTable />
+    </div>
   </Card>
+</main>

@@ -1,7 +1,7 @@
 import { writable, get } from 'svelte/store'
 import moment from 'moment'
 import { getView, getIndex } from '../api'
-import type { Validator, ValidatorUniverse, IndexData, SystemInfo } from '../types'
+import type { Validator, valData, IndexData, SystemInfo } from '../types'
 import * as systemPayloads from '../api/payloads/system'
 import * as validatorPayloads from '../api/payloads/validators'
 import * as commonPayloads from '../api/payloads/common'
@@ -22,7 +22,7 @@ export const systemInfo = writable<SystemInfo | null>(initialSystemInfo)
 export const commonInfo = writable<object>({})
 export const indexStore = writable<object>({})
 export const indexDataStore = writable<IndexData | null>(null)
-export const validatorUniverse = writable<ValidatorUniverse>(initialValidatorUniverse)
+export const valDataStore = writable<valData>(initialValidatorUniverse)
 
 export const getIndexData = async () => {
   try {
@@ -34,7 +34,7 @@ export const getIndexData = async () => {
 }
 
 // Subscribe to changes
-validatorUniverse.subscribe((value) => {
+valDataStore.subscribe((value) => {
   saveToLocalStorage('validatorUniverse', value)
 })
 
@@ -42,9 +42,9 @@ systemInfo.subscribe((value) => {
   saveToLocalStorage('systemInfo', value)
 })
 
-export const setValidators = async () => {
+export const getValidators = async () => {
   try {
-    const currentUniverse = get(validatorUniverse)
+    const currentUniverse = get(valDataStore)
 
     currentUniverse.validators = [] // Clear previous data if needed
 
@@ -87,7 +87,7 @@ export const setValidators = async () => {
       currentUniverse.validators.push(validator)
     }
 
-    validatorUniverse.set(currentUniverse)
+    valDataStore.set(currentUniverse)
 
     // Save to local storage
     saveToLocalStorage('validatorUniverse', currentUniverse)
@@ -133,7 +133,7 @@ export const refresh = async () => {
     // this should be done async, without the await
     getIndexData()
     getSystemInfo()
-    setValidators()
+    getValidators()
   } catch (error) {
     console.error(`Failed to refresh: ${error}`)
   }

@@ -41,7 +41,7 @@ export interface Validator {
   balance: SlowWalletBalance
 }
 
-export interface ValidatorUniverse {
+export interface valData {
   current_validators: string[] // Array of addresses
   eligible_validators: string[] // Array of addresses
   validators: Validator[]
