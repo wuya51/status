@@ -1,7 +1,7 @@
 import { writable, get } from 'svelte/store'
 import moment from 'moment'
 import { getView, getIndex } from '../api'
-import type { Validator, valData, IndexData, SystemInfo } from '../types'
+import type { UserAccount, valData, IndexData, SystemInfo } from '../types'
 import * as systemPayloads from '../api/payloads/system'
 import * as validatorPayloads from '../api/payloads/validators'
 import * as commonPayloads from '../api/payloads/common'
@@ -42,29 +42,32 @@ systemInfo.subscribe((value) => {
   saveToLocalStorage('systemInfo', value)
 })
 
-export const getValidators = async () => {
+export const getValidatorsOld = async () => {
   try {
+
     const currentUniverse = get(valDataStore)
 
-    currentUniverse.validators = [] // Clear previous data if needed
+    currentUniverse.current_profiles = [] // Clear previous data if needed
 
     const eligibleValidatorsPayload = validatorPayloads.eligible_validators_payload
 
     const eligibleValidatorsResponse = await getView(eligibleValidatorsPayload)
 
-    currentUniverse.eligible_validators = eligibleValidatorsResponse
+    currentUniverse.eligible_validators = eligibleValidatorsResponse[0]
 
     const allValidatorsPayload = validatorPayloads.current_validators_payload
 
-    const allValidatorsResponse = await getView(allValidatorsPayload)
+    const allValidatorsResponse: string[] = await getView(allValidatorsPayload)
+    console.log("allValidatorsResponse", JSON.stringify(allValidatorsResponse[0]))
 
     for (const address of allValidatorsResponse[0]) {
+      console.log("address",  address);
       // Fetch all vouchers
-      const allVouchersPayload = validatorPayloads.validator_vouchers_payload(address)
+      const allVouchersPayload = validatorPayloads.all_vouchers_payload(address)
       const allVouchersResponse = await getView(allVouchersPayload)
-
+      console.log(JSON.stringify(allVouchersResponse))
       // Fetch active vouchers
-      const activeVouchersPayload = validatorPayloads.validator_valid_vouchers_payload(address)
+      const activeVouchersPayload = validatorPayloads.vouchers_in_val_set_payload(address)
       const activeVouchersResponse = await getView(activeVouchersPayload)
 
       // Fetch balance
@@ -77,14 +80,14 @@ export const getValidators = async () => {
       )
 
       // Construct the Validator object
-      const validator: Validator = {
+      const validator: UserAccount = {
         address,
-        activeVouchers: activeVouchersResponse.data,
-        inactiveVouchers,
+        active_vouchers: activeVouchersResponse.data,
+        all_vouchers: inactiveVouchers,
         balance: balanceResponse.data,
       }
 
-      currentUniverse.validators.push(validator)
+      currentUniverse.current_profiles.push(validator)
     }
 
     valDataStore.set(currentUniverse)
@@ -94,6 +97,47 @@ export const getValidators = async () => {
   } catch (error) {
     console.error(`Failed to set validators: ${error}`)
   }
+}
+
+export const getValidators = async () => {
+  const requests = [
+    getView(validatorPayloads.eligible_validators_payload),
+    getView(validatorPayloads.current_validators_payload)
+  ]
+
+  let [eligible, active_set] = await Promise.all(requests);
+  let profiles = await fetchUserAccounts(active_set[0]);
+
+  valDataStore.update((d) => {
+    d.eligible_validators = eligible[0]
+    d.current_list = active_set[0]
+    d.current_profiles = profiles
+    return d
+  })
+}
+
+export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount[]> => {
+  let accountsData: UserAccount[] = [];
+  for (var a of accounts) {
+    const requests = [
+      getView(validatorPayloads.all_vouchers_payload(a)),
+      getView(validatorPayloads.vouchers_in_val_set_payload(a)),
+      getView(commonPayloads.account_balance_payload(a))
+    ]
+
+    let [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests);
+
+    const u = {
+      address: a,
+      active_vouchers: buddies_in_set_res[0],
+      all_vouchers: buddies_res[0],
+      balance: bal_res[0]
+    }
+
+    accountsData.push(u)
+  }
+
+  return accountsData
 }
 
 export const getSystemInfo = async () => {

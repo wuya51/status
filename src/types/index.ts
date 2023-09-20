@@ -34,15 +34,16 @@ export interface SlowWalletBalance {
   unlocked: number,
   total: number,
 }
-export interface Validator {
+export interface UserAccount {
+  // push(u: UserAccount): unknown
   address: string
-  activeVouchers: string[] // Array of addresses
-  inactiveVouchers: string[] // Array of addresses
-  balance: SlowWalletBalance
+  active_vouchers?: string[] // Array of addresses
+  all_vouchers?: string[] // Array of addresses
+  balance?: SlowWalletBalance
 }
 
 export interface valData {
-  current_validators: string[] // Array of addresses
+  current_list: string[] // Array of addresses
   eligible_validators: string[] // Array of addresses
-  validators: Validator[]
+  current_profiles: UserAccount[]
 }
