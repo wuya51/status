@@ -28,10 +28,14 @@ export interface SystemInfo {
   vdf: number[]
 }
 
+export interface ProofOfFee {
+  bidders: string[],
+  bids: number[]
+}
 export interface ViewObj {
   function: string
   type_arguments: string[]
-  arguments: string[]
+  arguments: any[]
 }
 
 export interface SlowWalletBalance {

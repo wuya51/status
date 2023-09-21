@@ -23,3 +23,10 @@ export const infra_balance: ViewObj = {
   type_arguments: [],
   arguments: [],
 }
+
+
+export const pof_bidders: ViewObj = {
+  function: '0x1::proof_of_fee::get_bidders_and_bids',
+  type_arguments: [],
+  arguments: [false],
+}

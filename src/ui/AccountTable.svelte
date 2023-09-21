@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { UserAccount } from "../types"
     import { scaleCoin } from "../utils/coin"
+
     export let profiles: UserAccount[] = [];
 </script>
 

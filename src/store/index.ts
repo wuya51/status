@@ -1,7 +1,7 @@
 import { writable, get } from 'svelte/store'
 import moment from 'moment'
 import { getView, getIndex } from '../api'
-import type { UserAccount, valData, IndexData, SystemInfo } from '../types'
+import type { UserAccount, valData, IndexData, SystemInfo, ProofOfFee } from '../types'
 import * as systemPayloads from '../api/payloads/system'
 import * as validatorPayloads from '../api/payloads/validators'
 import * as commonPayloads from '../api/payloads/common'
@@ -14,15 +14,23 @@ const initialValidatorUniverse = loadFromLocalStorage('validatorUniverse') || {
   validators: [],
 }
 
-const initialSystemInfo = loadFromLocalStorage('systemInfo') || null
+const initialSystemInfo = loadFromLocalStorage('systemInfo')
 
 // Writable stores
 export const validatorList = writable<[]>([])
-export const systemInfo = writable<SystemInfo | null>(initialSystemInfo)
+export const systemInfo = writable<SystemInfo>(initialSystemInfo)
+export const pofInfo = writable<ProofOfFee>()
+
 export const commonInfo = writable<object>({})
 export const indexStore = writable<object>({})
-export const indexDataStore = writable<IndexData | null>(null)
+export const indexDataStore = writable<IndexData>()
 export const valDataStore = writable<valData>(initialValidatorUniverse)
+export const selectedAccount = writable<string>()
+
+export const setAccount = (a: string) => {
+  selectedAccount.set(a)
+}
+
 
 export const getIndexData = async () => {
   try {
@@ -151,8 +159,10 @@ export const getSystemInfo = async () => {
       getView(systemPayloads.epoch_length_payload),
       getView(systemPayloads.vdf_difficulty),
       getView(systemPayloads.infra_balance),
+      getView(systemPayloads.pof_bidders),
+
     ]
-    const [fees, epochResponse, vdfDifficulty, infraBalance] = await Promise.all(requests)
+    const [fees, epochResponse, vdfDifficulty, infraBalance, pofBidders] = await Promise.all(requests)
 
     const duration = moment.duration(Number(epochResponse[0]), 'seconds') // Cast to Number
     const epoch = `${Math.floor(duration.asHours())} hrs : ${duration.minutes()} mins`
@@ -167,8 +177,14 @@ export const getSystemInfo = async () => {
       ...indexData,
     }
 
-    systemInfo.set(newSystemInfo)
+    console.log("pofBidders", pofBidders);
+    const pof: ProofOfFee = {
+      bidders: pofBidders[0],
+      bids: pofBidders[1],
+    }
 
+    systemInfo.set(newSystemInfo)
+    pofInfo.set(pof)
     // Save to local storage
     saveToLocalStorage('systemInfo', newSystemInfo)
   } catch (error) {
