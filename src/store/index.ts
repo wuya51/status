@@ -44,7 +44,6 @@ systemInfo.subscribe((value) => {
 
 export const getValidatorsOld = async () => {
   try {
-
     const currentUniverse = get(valDataStore)
 
     currentUniverse.current_profiles = [] // Clear previous data if needed
@@ -58,10 +57,10 @@ export const getValidatorsOld = async () => {
     const allValidatorsPayload = validatorPayloads.current_validators_payload
 
     const allValidatorsResponse: string[] = await getView(allValidatorsPayload)
-    console.log("allValidatorsResponse", JSON.stringify(allValidatorsResponse[0]))
+    console.log('allValidatorsResponse', JSON.stringify(allValidatorsResponse[0]))
 
     for (const address of allValidatorsResponse[0]) {
-      console.log("address",  address);
+      console.log('address', address)
       // Fetch all vouchers
       const allVouchersPayload = validatorPayloads.all_vouchers_payload(address)
       const allVouchersResponse = await getView(allVouchersPayload)
@@ -102,11 +101,11 @@ export const getValidatorsOld = async () => {
 export const getValidators = async () => {
   const requests = [
     getView(validatorPayloads.eligible_validators_payload),
-    getView(validatorPayloads.current_validators_payload)
+    getView(validatorPayloads.current_validators_payload),
   ]
 
-  let [eligible, active_set] = await Promise.all(requests);
-  let profiles = await fetchUserAccounts(active_set[0]);
+  const [eligible, active_set] = await Promise.all(requests)
+  const profiles = await fetchUserAccounts(active_set[0])
 
   valDataStore.update((d) => {
     d.eligible_validators = eligible[0]
@@ -117,21 +116,24 @@ export const getValidators = async () => {
 }
 
 export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount[]> => {
-  let accountsData: UserAccount[] = [];
-  for (var a of accounts) {
+  const accountsData: UserAccount[] = []
+  for (const a of accounts) {
     const requests = [
       getView(validatorPayloads.all_vouchers_payload(a)),
       getView(validatorPayloads.vouchers_in_val_set_payload(a)),
-      getView(commonPayloads.account_balance_payload(a))
+      getView(commonPayloads.account_balance_payload(a)),
     ]
 
-    let [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests);
+    const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
 
     const u = {
       address: a,
       active_vouchers: buddies_in_set_res[0],
       all_vouchers: buddies_res[0],
-      balance: bal_res[0]
+      balance: {
+        unlocked: bal_res[0],
+        total: bal_res[1]
+      },
     }
 
     accountsData.push(u)
@@ -143,10 +145,10 @@ export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount
 export const getSystemInfo = async () => {
   try {
     // TODO(zoz): it would be better to let these be async and parallel
-    let requests = [
+    const requests = [
       getView(systemPayloads.fees_collected_payload),
       getView(systemPayloads.epoch_length_payload),
-      getView(systemPayloads.vdf_difficulty)
+      getView(systemPayloads.vdf_difficulty),
     ]
     const [fees, epochResponse, vdfDifficulty] = await Promise.all(requests)
 

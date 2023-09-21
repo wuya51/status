@@ -31,8 +31,8 @@ export interface ViewObj {
 }
 
 export interface SlowWalletBalance {
-  unlocked: number,
-  total: number,
+  unlocked: number
+  total: number
 }
 export interface UserAccount {
   // push(u: UserAccount): unknown
