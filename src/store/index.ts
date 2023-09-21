@@ -42,61 +42,61 @@ systemInfo.subscribe((value) => {
   saveToLocalStorage('systemInfo', value)
 })
 
-export const getValidatorsOld = async () => {
-  try {
-    const currentUniverse = get(valDataStore)
+// export const getValidatorsOld = async () => {
+//   try {
+//     const currentUniverse = get(valDataStore)
 
-    currentUniverse.current_profiles = [] // Clear previous data if needed
+//     currentUniverse.current_profiles = [] // Clear previous data if needed
 
-    const eligibleValidatorsPayload = validatorPayloads.eligible_validators_payload
+//     const eligibleValidatorsPayload = validatorPayloads.eligible_validators_payload
 
-    const eligibleValidatorsResponse = await getView(eligibleValidatorsPayload)
+//     const eligibleValidatorsResponse = await getView(eligibleValidatorsPayload)
 
-    currentUniverse.eligible_validators = eligibleValidatorsResponse[0]
+//     currentUniverse.eligible_validators = eligibleValidatorsResponse[0]
 
-    const allValidatorsPayload = validatorPayloads.current_validators_payload
+//     const allValidatorsPayload = validatorPayloads.current_validators_payload
 
-    const allValidatorsResponse: string[] = await getView(allValidatorsPayload)
-    console.log('allValidatorsResponse', JSON.stringify(allValidatorsResponse[0]))
+//     const allValidatorsResponse: string[] = await getView(allValidatorsPayload)
+//     console.log('allValidatorsResponse', JSON.stringify(allValidatorsResponse[0]))
 
-    for (const address of allValidatorsResponse[0]) {
-      console.log('address', address)
-      // Fetch all vouchers
-      const allVouchersPayload = validatorPayloads.all_vouchers_payload(address)
-      const allVouchersResponse = await getView(allVouchersPayload)
-      console.log(JSON.stringify(allVouchersResponse))
-      // Fetch active vouchers
-      const activeVouchersPayload = validatorPayloads.vouchers_in_val_set_payload(address)
-      const activeVouchersResponse = await getView(activeVouchersPayload)
+//     for (const address of allValidatorsResponse[0]) {
+//       console.log('address', address)
+//       // Fetch all vouchers
+//       const allVouchersPayload = validatorPayloads.all_vouchers_payload(address)
+//       const allVouchersResponse = await getView(allVouchersPayload)
+//       console.log(JSON.stringify(allVouchersResponse))
+//       // Fetch active vouchers
+//       const activeVouchersPayload = validatorPayloads.vouchers_in_val_set_payload(address)
+//       const activeVouchersResponse = await getView(activeVouchersPayload)
 
-      // Fetch balance
-      const balancePayload = commonPayloads.account_balance_payload(address)
-      const balanceResponse = await getView(balancePayload)
+//       // Fetch balance
+//       const balancePayload = commonPayloads.account_balance_payload(address)
+//       const balanceResponse = await getView(balancePayload)
 
-      // Determine inactive vouchers
-      const inactiveVouchers = allVouchersResponse.data?.filter(
-        (voucher) => !activeVouchersResponse.data.includes(voucher),
-      )
+//       // Determine inactive vouchers
+//       const inactiveVouchers = allVouchersResponse.data?.filter(
+//         (voucher) => !activeVouchersResponse.data.includes(voucher),
+//       )
 
-      // Construct the Validator object
-      const validator: UserAccount = {
-        address,
-        active_vouchers: activeVouchersResponse.data,
-        all_vouchers: inactiveVouchers,
-        balance: balanceResponse.data,
-      }
+//       // Construct the Validator object
+//       const validator: UserAccount = {
+//         address,
+//         active_vouchers: activeVouchersResponse.data,
+//         all_vouchers: inactiveVouchers,
+//         balance: balanceResponse.data,
+//       }
 
-      currentUniverse.current_profiles.push(validator)
-    }
+//       currentUniverse.current_profiles.push(validator)
+//     }
 
-    valDataStore.set(currentUniverse)
+//     valDataStore.set(currentUniverse)
 
-    // Save to local storage
-    saveToLocalStorage('validatorUniverse', currentUniverse)
-  } catch (error) {
-    console.error(`Failed to set validators: ${error}`)
-  }
-}
+//     // Save to local storage
+//     saveToLocalStorage('validatorUniverse', currentUniverse)
+//   } catch (error) {
+//     console.error(`Failed to set validators: ${error}`)
+//   }
+// }
 
 export const getValidators = async () => {
   const requests = [
@@ -125,8 +125,9 @@ export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount
     ]
 
     const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
+    console.log("buddies_res", buddies_in_set_res[0]);
 
-    const u = {
+    const u: UserAccount  = {
       address: a,
       active_vouchers: buddies_in_set_res[0],
       all_vouchers: buddies_res[0],
@@ -149,18 +150,20 @@ export const getSystemInfo = async () => {
       getView(systemPayloads.fees_collected_payload),
       getView(systemPayloads.epoch_length_payload),
       getView(systemPayloads.vdf_difficulty),
+      getView(systemPayloads.infra_balance),
     ]
-    const [fees, epochResponse, vdfDifficulty] = await Promise.all(requests)
+    const [fees, epochResponse, vdfDifficulty, infraBalance] = await Promise.all(requests)
 
     const duration = moment.duration(Number(epochResponse[0]), 'seconds') // Cast to Number
     const epoch = `${Math.floor(duration.asHours())} hrs : ${duration.minutes()} mins`
     const indexData = get(indexDataStore)
 
     // TODO(zoz): make this an interface
-    const newSystemInfo = {
+    const newSystemInfo: SystemInfo = {
       fees: fees[0],
       epoch_duration: epoch,
       vdf: vdfDifficulty,
+      infra_escrow: infraBalance[0],
       ...indexData,
     }
 

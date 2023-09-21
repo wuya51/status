@@ -28,7 +28,7 @@
   <h1>status</h1>
 
   <p>
-    api url: {url}
+     api url: <a href="{url}spec" target="_blank">{url} </a>
     note: {note}
   </p>
 

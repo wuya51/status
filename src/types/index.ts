@@ -1,3 +1,5 @@
+import type { infra_balance } from "../api/payloads/system"
+
 export interface IndexData {
   chain_id: number
   epoch: string
@@ -22,6 +24,8 @@ export interface SystemInfo {
   oldest_block_height: string
   block_height: string
   git_hash: string
+  infra_escrow: number
+  vdf: number[]
 }
 
 export interface ViewObj {

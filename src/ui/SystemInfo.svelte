@@ -1,34 +1,38 @@
 <script>
   import 'uikit/dist/css/uikit.min.css'
   import { systemInfo } from '../store'
+  import { scaleCoin } from "../utils/coin"
+
   import Card from './Card.svelte'
 </script>
 
 <Card title="System Information" style="default">
   <div slot="body">
     {#if $systemInfo}
-      <div>
-        <p>Chain ID: {$systemInfo.chain_id}</p>
-        <p>Epoch: {$systemInfo.epoch}</p>
-        <p>Ledger Version: {$systemInfo.ledger_version}</p>
-        <p>Oldest Ledger Version: {$systemInfo.oldest_ledger_version}</p>
-        <p>Fees: {$systemInfo.fees}</p>
-      </div>
-      <div>
+      <ul>
+        <li>Chain ID: {$systemInfo.chain_id}</li>
+        <li>Epoch: {$systemInfo.epoch}</li>
+        <li>Ledger Version: {$systemInfo.ledger_version}</li>
+        <li>Oldest Ledger Version: {$systemInfo.oldest_ledger_version}</li>
+        <li>Fees: {$systemInfo.fees}</li>
+      </ul>
+      <ul>
         <!-- Display part 2 of the system information -->
-        <p>Ledger Timestamp: {$systemInfo.ledger_timestamp}</p>
-        <p>Node Role: {$systemInfo.node_role}</p>
-        <p>Oldest Block Height: {$systemInfo.oldest_block_height}</p>
-        <p>Block Height: {$systemInfo.block_height}</p>
-        <p>Git Hash: {$systemInfo.git_hash}</p>
-        <p>Epoch Duration: {$systemInfo.epoch_duration}</p>
-      </div>
-      <div>
-        <p>VDF Difficulty: {$systemInfo.vdf[0]}</p>
-        <p>VDF Security: {$systemInfo.vdf[1]}</p>
-      </div>
+        <li>Ledger Timestamp: {$systemInfo.ledger_timestamp}</li>
+        <li>Node Role: {$systemInfo.node_role}</li>
+        <li>Oldest Block Height: {$systemInfo.oldest_block_height}</li>
+        <li>Block Height: {$systemInfo.block_height}</li>
+        <li>Git Hash: {$systemInfo.git_hash}</li>
+        <li>Epoch Duration: {$systemInfo.epoch_duration}</li>
+      </ul>
+      <ul>
+        <li>VDF Difficulty: {$systemInfo.vdf[0]}</li>
+        <li>VDF Security: {$systemInfo.vdf[1]}</li>
+        <li>Infra Escrow: {scaleCoin($systemInfo.infra_escrow)}</li>
+
+      </ul>
     {:else}
-      <p>Loading...</p>
+      <span>Loading...</span>
     {/if}
   </div>
 </Card>

@@ -17,3 +17,9 @@ export const vdf_difficulty: ViewObj = {
   type_arguments: [],
   arguments: [],
 }
+
+export const infra_balance: ViewObj = {
+  function: '0x1::infra_escrow::infra_escrow_balance',
+  type_arguments: [],
+  arguments: [],
+}
