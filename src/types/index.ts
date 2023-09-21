@@ -1,4 +1,4 @@
-import type { infra_balance } from "../api/payloads/system"
+
 
 export interface IndexData {
   chain_id: number
@@ -30,7 +30,8 @@ export interface SystemInfo {
 
 export interface ProofOfFee {
   bidders: string[],
-  bids: number[]
+  bids: number[],
+  qualified: string[],
 }
 export interface ViewObj {
   function: string

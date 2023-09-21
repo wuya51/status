@@ -13,6 +13,7 @@
           <tr>
             <th>Address</th>
             <th>Bid</th>
+            <th>Qualified</th>
           </tr>
         </thead>
         <tbody>
@@ -21,6 +22,7 @@
               <tr>
                 <td>{addr.slice(0, 5)}</td>
                 <td>{$pofInfo.bids[idx]}</td>
+                <td>{$pofInfo.qualified.includes(addr)}</td>
               </tr>
             {/each}
           {/if}

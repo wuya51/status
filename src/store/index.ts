@@ -15,6 +15,8 @@ const initialValidatorUniverse = loadFromLocalStorage('validatorUniverse') || {
 }
 
 const initialSystemInfo = loadFromLocalStorage('systemInfo')
+const initialUser = loadFromLocalStorage('selectedUser')
+
 
 // Writable stores
 export const validatorList = writable<[]>([])
@@ -25,10 +27,11 @@ export const commonInfo = writable<object>({})
 export const indexStore = writable<object>({})
 export const indexDataStore = writable<IndexData>()
 export const valDataStore = writable<valData>(initialValidatorUniverse)
-export const selectedAccount = writable<string>()
+export const selectedAccount = writable<string>(initialUser)
 
 export const setAccount = (a: string) => {
   selectedAccount.set(a)
+  saveToLocalStorage('selectedUser', a )
 }
 
 
@@ -159,10 +162,11 @@ export const getSystemInfo = async () => {
       getView(systemPayloads.epoch_length_payload),
       getView(systemPayloads.vdf_difficulty),
       getView(systemPayloads.infra_balance),
-      getView(systemPayloads.pof_bidders),
+      getView(systemPayloads.getPoFBidders(true)),
+      getView(systemPayloads.getPoFBidders(false)),
 
     ]
-    const [fees, epochResponse, vdfDifficulty, infraBalance, pofBidders] = await Promise.all(requests)
+    const [fees, epochResponse, vdfDifficulty, infraBalance, pofBiddersFiltered, pofBidders] = await Promise.all(requests)
 
     const duration = moment.duration(Number(epochResponse[0]), 'seconds') // Cast to Number
     const epoch = `${Math.floor(duration.asHours())} hrs : ${duration.minutes()} mins`
@@ -181,6 +185,7 @@ export const getSystemInfo = async () => {
     const pof: ProofOfFee = {
       bidders: pofBidders[0],
       bids: pofBidders[1],
+      qualified: pofBiddersFiltered[0]
     }
 
     systemInfo.set(newSystemInfo)

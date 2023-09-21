@@ -1,4 +1,4 @@
-export function saveToLocalStorage(key: string, value: object) {
+export function saveToLocalStorage(key: string, value: any) {
   if (typeof window !== 'undefined') {
     localStorage.setItem(key, JSON.stringify(value))
   }
