@@ -1,6 +1,9 @@
 <script>
   import Card from './Card.svelte'
   import { pofInfo } from '../store'
+    import { getView } from '../api'
+    import { getPoFErrors } from '../api/payloads/system'
+
 </script>
 
 <main>
@@ -14,6 +17,7 @@
             <th>Address</th>
             <th>Bid</th>
             <th>Qualified</th>
+            <th>Errors</th>
           </tr>
         </thead>
         <tbody>
@@ -23,6 +27,7 @@
                 <td>{addr.slice(0, 5)}</td>
                 <td>{$pofInfo.bids[idx]}</td>
                 <td>{$pofInfo.qualified.includes(addr)}</td>
+                <td>{getView(getPoFErrors(addr))}</td>
               </tr>
             {/each}
           {/if}

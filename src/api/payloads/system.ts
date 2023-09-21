@@ -33,3 +33,12 @@ export const getPoFBidders = (filter_unqualified: boolean):ViewObj => {
   }
 }
 
+export const getPoFErrors = (addr: string): ViewObj => {
+  return {
+    function: '0x1::proof_of_fee::audit_qualification',
+    type_arguments: [],
+    arguments: [addr],
+  }
+}
+
+
