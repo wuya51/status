@@ -9,13 +9,15 @@
   let profiles: UserAccount[] = []
   onMount(async () => {
     selectedAccount.subscribe((a) => {
-      fetchUserAccounts([a]).then(p => profiles = p)
+      console.log(a)
+      if (a) fetchUserAccounts([a])
+        .then(p => profiles = p)
     });
   })
 </script>
 
 <main>
-  {#if $selectedAccount}
+  {#if $selectedAccount && profiles.length > 0 }
   <Card title="User: {$selectedAccount.slice(0,5)}" style="primary">
     <div slot="body">
       <AccountTable {profiles} />

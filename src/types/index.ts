@@ -36,7 +36,7 @@ export interface ProofOfFee {
 export interface ViewObj {
   function: string
   type_arguments: string[]
-  arguments: any[]
+  arguments: string[] | boolean[]
 }
 
 export interface SlowWalletBalance {

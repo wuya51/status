@@ -12,7 +12,8 @@
     <thead>
       <tr>
         <th>Address</th>
-        <th>Count Vouchers</th>
+        <th>All Vouchers</th>
+        <th>Active Vouchers</th>
         <th>Balance</th>
       </tr>
     </thead>
@@ -21,6 +22,8 @@
         {#each profiles as a}
           <tr>
             <td>{a.address.slice(0, 5)}</td>
+            <td>{a.all_vouchers && a.all_vouchers.length || "no buddies"}</td>
+
             <td>{a.active_vouchers && a.active_vouchers.length || "no buddies"}</td>
             <td>{a.balance && `${scaleCoin(a.balance.unlocked)} / ${scaleCoin(a.balance.total)}` || 'no balance found' }</td>
           </tr>

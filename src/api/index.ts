@@ -67,6 +67,7 @@ export const getView = async (payload: ViewObj) => {
     const response = await api.post('/view', payload)
     return response.data
   } catch (error) {
+    // TODO: log errors
     console.error(`Failed to get view ${payload.function}, message: ${error.message}`)
     throw error
   }

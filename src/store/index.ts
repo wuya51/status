@@ -117,6 +117,7 @@ export const getValidators = async () => {
 
   const [eligible, active_set] = await Promise.all(requests)
   const profiles = await fetchUserAccounts(active_set[0])
+    .catch(e => [])
 
   valDataStore.update((d) => {
     d.eligible_validators = eligible[0]
@@ -127,6 +128,8 @@ export const getValidators = async () => {
 }
 
 export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount[]> => {
+  if (accounts.length == 0) throw "no accounts"
+
   const accountsData: UserAccount[] = []
   for (const a of accounts) {
     const requests = [
@@ -136,7 +139,8 @@ export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount
     ]
 
     const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
-    console.log("buddies_res", buddies_in_set_res[0]);
+
+    console.log("buddies_in_set_res", buddies_in_set_res[0])
 
     const u: UserAccount  = {
       address: a,
@@ -181,7 +185,6 @@ export const getSystemInfo = async () => {
       ...indexData,
     }
 
-    console.log("pofBidders", pofBidders);
     const pof: ProofOfFee = {
       bidders: pofBidders[0],
       bids: pofBidders[1],

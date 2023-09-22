@@ -1,9 +1,16 @@
-<script>
+<script lang="ts">
   import Card from './Card.svelte'
   import { pofInfo } from '../store'
-    import { getView } from '../api'
-    import { getPoFErrors } from '../api/payloads/system'
+  import { getView } from '../api'
+  import { getPoFErrors } from '../api/payloads/system'
+  import { mapPoFErrors } from '../types/proof_of_fee'
 
+  const getErrors = async (addr: string): Promise<string[]> => {
+    return getView(getPoFErrors(addr))
+    .then((res) => {
+      return mapPoFErrors(res[0])
+    })
+  }
 </script>
 
 <main>
@@ -27,7 +34,16 @@
                 <td>{addr.slice(0, 5)}</td>
                 <td>{$pofInfo.bids[idx]}</td>
                 <td>{$pofInfo.qualified.includes(addr)}</td>
-                <td>{getView(getPoFErrors(addr))}</td>
+
+                <td>
+                  {#await getErrors(addr)}
+                    load
+                  {:then errs}
+                    {errs}
+                  {:catch error}
+                    <p style="color: red">{error.message}</p>
+                  {/await}
+                </td>
               </tr>
             {/each}
           {/if}
