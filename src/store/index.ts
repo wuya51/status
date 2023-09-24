@@ -19,7 +19,8 @@ export interface User {
 }
 
 const initialSystemInfo = loadFromLocalStorage('systemInfo')
-// const initialUser = loadFromLocalStorage('selectedUser')
+
+const initialUser = loadFromLocalStorage('selectedUser')
 
 // Writable stores
 export const validatorList = writable<[]>([])
@@ -30,7 +31,7 @@ export const commonInfo = writable<object>({})
 export const indexStore = writable<object>({})
 export const indexDataStore = writable<IndexData>()
 export const valDataStore = writable<valData>(initialValidatorUniverse)
-export const selectedAccount = writable<User>()
+export const selectedAccount = writable<User>({address: ""})
 
 export const setAccount = (a: User) => {
   selectedAccount.set(a)
