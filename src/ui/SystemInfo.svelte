@@ -31,6 +31,14 @@
         <li>Infra Escrow: {scaleCoin($systemInfo.infra_escrow)}</li>
 
       </ul>
+
+      <ul>
+        <li>Val Seats: {$systemInfo.validator_seats}</li>
+      </ul>
+
+      <ul>
+        <li>boundary status: {JSON.stringify($systemInfo.boundary_status, false, 4)}</li>
+      </ul>
     {:else}
       <span>Loading...</span>
     {/if}

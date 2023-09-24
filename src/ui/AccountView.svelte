@@ -10,7 +10,7 @@
   onMount(async () => {
     selectedAccount.subscribe((a) => {
       console.log(a)
-      if (a) fetchUserAccounts([a])
+      if (a) fetchUserAccounts([a.address])
         .then(p => profiles = p)
     });
   })
@@ -18,7 +18,7 @@
 
 <main>
   {#if $selectedAccount && profiles.length > 0 }
-  <Card title="User: {$selectedAccount.slice(0,5)}" style="primary">
+  <Card title="User: {$selectedAccount.address.slice(0,5)}" style="primary">
     <div slot="body">
       <AccountTable {profiles} />
     </div>

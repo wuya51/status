@@ -32,7 +32,7 @@
   <p>
     api url: <a href="{url}spec" target="_blank">{url} </a>
     note: {note}
-    account: {$selectedAccount}
+    account: {$selectedAccount.address}
   </p>
 
   <div class="container">

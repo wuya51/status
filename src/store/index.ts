@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store'
 import moment from 'moment'
-import { getView, getIndex } from '../api'
+import { postViewFunc, getIndex, getAccountResource } from '../api'
 import type { UserAccount, valData, IndexData, SystemInfo, ProofOfFee } from '../types'
 import * as systemPayloads from '../api/payloads/system'
 import * as validatorPayloads from '../api/payloads/validators'
@@ -14,9 +14,12 @@ const initialValidatorUniverse = loadFromLocalStorage('validatorUniverse') || {
   validators: [],
 }
 
-const initialSystemInfo = loadFromLocalStorage('systemInfo')
-const initialUser = loadFromLocalStorage('selectedUser')
+export interface User {
+  address: string
+}
 
+const initialSystemInfo = loadFromLocalStorage('systemInfo')
+// const initialUser = loadFromLocalStorage('selectedUser')
 
 // Writable stores
 export const validatorList = writable<[]>([])
@@ -27,13 +30,12 @@ export const commonInfo = writable<object>({})
 export const indexStore = writable<object>({})
 export const indexDataStore = writable<IndexData>()
 export const valDataStore = writable<valData>(initialValidatorUniverse)
-export const selectedAccount = writable<string>(initialUser)
+export const selectedAccount = writable<User>()
 
-export const setAccount = (a: string) => {
+export const setAccount = (a: User) => {
   selectedAccount.set(a)
-  saveToLocalStorage('selectedUser', a )
+  saveToLocalStorage('selectedUser', a)
 }
-
 
 export const getIndexData = async () => {
   try {
@@ -111,13 +113,12 @@ systemInfo.subscribe((value) => {
 
 export const getValidators = async () => {
   const requests = [
-    getView(validatorPayloads.eligible_validators_payload),
-    getView(validatorPayloads.current_validators_payload),
+    postViewFunc(validatorPayloads.eligible_validators_payload),
+    postViewFunc(validatorPayloads.current_validators_payload),
   ]
 
   const [eligible, active_set] = await Promise.all(requests)
   const profiles = await fetchUserAccounts(active_set[0])
-    .catch(e => [])
 
   valDataStore.update((d) => {
     d.eligible_validators = eligible[0]
@@ -128,27 +129,25 @@ export const getValidators = async () => {
 }
 
 export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount[]> => {
-  if (accounts.length == 0) throw "no accounts"
+  if (accounts.length == 0) throw 'no accounts'
 
   const accountsData: UserAccount[] = []
   for (const a of accounts) {
     const requests = [
-      getView(validatorPayloads.all_vouchers_payload(a)),
-      getView(validatorPayloads.vouchers_in_val_set_payload(a)),
-      getView(commonPayloads.account_balance_payload(a)),
+      postViewFunc(validatorPayloads.all_vouchers_payload(a)),
+      postViewFunc(validatorPayloads.vouchers_in_val_set_payload(a)),
+      postViewFunc(commonPayloads.account_balance_payload(a)),
     ]
 
     const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
 
-    console.log("buddies_in_set_res", buddies_in_set_res[0])
-
-    const u: UserAccount  = {
+    const u: UserAccount = {
       address: a,
       active_vouchers: buddies_in_set_res[0],
       all_vouchers: buddies_res[0],
       balance: {
         unlocked: bal_res[0],
-        total: bal_res[1]
+        total: bal_res[1],
       },
     }
 
@@ -162,15 +161,25 @@ export const getSystemInfo = async () => {
   try {
     // TODO(zoz): it would be better to let these be async and parallel
     const requests = [
-      getView(systemPayloads.fees_collected_payload),
-      getView(systemPayloads.epoch_length_payload),
-      getView(systemPayloads.vdf_difficulty),
-      getView(systemPayloads.infra_balance),
-      getView(systemPayloads.getPoFBidders(true)),
-      getView(systemPayloads.getPoFBidders(false)),
-
+      postViewFunc(systemPayloads.fees_collected_payload),
+      postViewFunc(systemPayloads.epoch_length_payload),
+      postViewFunc(systemPayloads.vdf_difficulty),
+      postViewFunc(systemPayloads.infra_balance),
+      postViewFunc(systemPayloads.getPoFBidders(true)),
+      postViewFunc(systemPayloads.getPoFBidders(false)),
+      getAccountResource('0x1', '0x1::musical_chairs::Chairs'),
+      getAccountResource('0x1', '0x1::epoch_boundary::BoundaryStatus'),
     ]
-    const [fees, epochResponse, vdfDifficulty, infraBalance, pofBiddersFiltered, pofBidders] = await Promise.all(requests)
+    const [
+      fees,
+      epochResponse,
+      vdfDifficulty,
+      infraBalance,
+      pofBiddersFiltered,
+      pofBidders,
+      chairs,
+      boundaryStatus,
+    ] = await Promise.all(requests)
 
     const duration = moment.duration(Number(epochResponse[0]), 'seconds') // Cast to Number
     const epoch = `${Math.floor(duration.asHours())} hrs : ${duration.minutes()} mins`
@@ -182,13 +191,15 @@ export const getSystemInfo = async () => {
       epoch_duration: epoch,
       vdf: vdfDifficulty,
       infra_escrow: infraBalance[0],
+      validator_seats: chairs.data.current_seats,
+      boundary_status: boundaryStatus,
       ...indexData,
     }
 
     const pof: ProofOfFee = {
       bidders: pofBidders[0],
       bids: pofBidders[1],
-      qualified: pofBiddersFiltered[0]
+      qualified: pofBiddersFiltered[0],
     }
 
     systemInfo.set(newSystemInfo)
@@ -199,7 +210,6 @@ export const getSystemInfo = async () => {
     console.error(`Failed to get system info: ${error}`)
   }
 }
-
 
 // Function to refresh all data
 export const refresh = async () => {

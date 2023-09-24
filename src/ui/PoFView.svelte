@@ -1,12 +1,12 @@
 <script lang="ts">
   import Card from './Card.svelte'
   import { pofInfo } from '../store'
-  import { getView } from '../api'
+  import { postViewFunc } from '../api'
   import { getPoFErrors } from '../api/payloads/system'
   import { mapPoFErrors } from '../types/proof_of_fee'
 
   const getErrors = async (addr: string): Promise<string[]> => {
-    return getView(getPoFErrors(addr))
+    return postViewFunc(getPoFErrors(addr))
     .then((res) => {
       return mapPoFErrors(res[0])
     })

@@ -62,13 +62,24 @@ export const getIndex = async () => {
   }
 }
 
-export const getView = async (payload: ViewObj) => {
+export const postViewFunc = async (payload: ViewObj) => {
   try {
     const response = await api.post('/view', payload)
     return response.data
   } catch (error) {
     // TODO: log errors
     console.error(`Failed to get view ${payload.function}, message: ${error.message}`)
+    throw error
+  }
+}
+
+export const getAccountResource = async (account: string, struct_path: string) => {
+  try {
+    const response = await api.get(`/accounts/${account}/resource/${struct_path}`)
+    return response.data
+  } catch (error) {
+    // TODO: log errors
+    console.error(`Failed to get view ${struct_path}, message: ${error.message}`)
     throw error
   }
 }

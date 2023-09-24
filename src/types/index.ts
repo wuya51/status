@@ -1,5 +1,3 @@
-
-
 export interface IndexData {
   chain_id: number
   epoch: string
@@ -25,13 +23,15 @@ export interface SystemInfo {
   block_height: string
   git_hash: string
   infra_escrow: number
+  validator_seats: number
   vdf: number[]
+  boundary_status: object
 }
 
 export interface ProofOfFee {
-  bidders: string[],
-  bids: number[],
-  qualified: string[],
+  bidders: string[]
+  bids: number[]
+  qualified: string[]
 }
 export interface ViewObj {
   function: string

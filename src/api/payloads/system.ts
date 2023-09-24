@@ -24,8 +24,7 @@ export const infra_balance: ViewObj = {
   arguments: [],
 }
 
-
-export const getPoFBidders = (filter_unqualified: boolean):ViewObj => {
+export const getPoFBidders = (filter_unqualified: boolean): ViewObj => {
   return {
     function: '0x1::proof_of_fee::get_bidders_and_bids',
     type_arguments: [],
@@ -40,5 +39,3 @@ export const getPoFErrors = (addr: string): ViewObj => {
     arguments: [addr],
   }
 }
-
-
