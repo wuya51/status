@@ -32,12 +32,21 @@
         {/each}
       </li>
 
-      <li>auction_winners: {$systemInfo.boundary_status['incoming_final_set_size']}</li>
+      <li>
+        incoming_auction_winners:
+        {#each $systemInfo.boundary_status['incoming_auction_winners'] as e}
+          {e.slice(0, 5)} |
+        {/each}
+      </li>
+
+      <li>filled seats: {$systemInfo.boundary_status['incoming_filled_seats']}</li>
+
       <li>incoming_fees: {$systemInfo.boundary_status['incoming_fees']}</li>
       <li>incoming_fees_success: {$systemInfo.boundary_status['incoming_fees_success']}</li>
 
       Reconfiguration:
       <li>
+        proposed validators:
         {#each $systemInfo.boundary_status['incoming_proposed_new_validators'] as e}
           {e.slice(0, 5)} |
         {/each}
@@ -47,13 +56,16 @@
         {#each $systemInfo.boundary_status['incoming_post_failover_check'] as e}
           {e.slice(0, 5)} |
         {/each}
-
       </li>
-      <li>incoming_filled_seats: {$systemInfo.boundary_status['incoming_filled_seats']}</li>
 
+      <li>
+        incoming_actual_vals:
+        {#each $systemInfo.boundary_status['incoming_actual_vals'] as e}
+          {e.slice(0, 5)} |
+        {/each}
+      </li>
+      <li>incoming_final_set_size: {$systemInfo.boundary_status['incoming_final_set_size']}</li>
       <li>incoming_reconfig_success: {$systemInfo.boundary_status['incoming_reconfig_success']}</li>
-
-      <!-- <li>incoming_actual_vals: {$systemInfo.boundary_status['incoming_actual_vals']}</li> -->
     {/if}
   </div>
 </Card>
