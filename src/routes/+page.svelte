@@ -6,8 +6,9 @@
   import { refresh, selectedAccount } from '../store'
   import SystemInfo from '../ui/SystemInfo.svelte'
   import Validators from '../ui/Validators.svelte'
-    import AccountView from '../ui/AccountView.svelte'
-    import PoFView from '../ui/PoFView.svelte'
+  import AccountView from '../ui/AccountView.svelte'
+  import PoFView from '../ui/PoFView.svelte'
+  import BoundaryStatus from '../ui/BoundaryStatus.svelte'
 
   let url
   let note
@@ -38,6 +39,7 @@
   <div class="container">
     <div class="uk-flex uk-flex-wrap">
       <SystemInfo />
+      <BoundaryStatus />
       <Validators />
       <AccountView />
       <PoFView />

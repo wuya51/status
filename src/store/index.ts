@@ -7,35 +7,35 @@ import * as validatorPayloads from '../api/payloads/validators'
 import * as commonPayloads from '../api/payloads/common'
 import { saveToLocalStorage, loadFromLocalStorage } from '../utils/localStorage'
 
-// Initialize from local storage
-const initialValidatorUniverse = loadFromLocalStorage('validatorUniverse') || {
-  current_validators: [],
-  eligible_validators: [],
-  validators: [],
-}
+// // Initialize from local storage
+// const initialValidatorUniverse = loadFromLocalStorage('validatorUniverse') || {
+//   current_validators: [],
+//   eligible_validators: [],
+//   validators: [],
+// }
 
 export interface User {
   address: string
 }
 
-const initialSystemInfo = loadFromLocalStorage('systemInfo')
+// const initialSystemInfo = loadFromLocalStorage('systemInfo')
 
-const initialUser = loadFromLocalStorage('selectedUser')
+// const initialUser = loadFromLocalStorage('selectedUser')
 
 // Writable stores
 export const validatorList = writable<[]>([])
-export const systemInfo = writable<SystemInfo>(initialSystemInfo)
+export const systemInfo = writable<SystemInfo>()
 export const pofInfo = writable<ProofOfFee>()
 
 export const commonInfo = writable<object>({})
 export const indexStore = writable<object>({})
 export const indexDataStore = writable<IndexData>()
-export const valDataStore = writable<valData>(initialValidatorUniverse)
+export const valDataStore = writable<valData>()
 export const selectedAccount = writable<User>({address: ""})
 
 export const setAccount = (a: User) => {
   selectedAccount.set(a)
-  saveToLocalStorage('selectedUser', a)
+  // saveToLocalStorage('selectedUser', a)
 }
 
 export const getIndexData = async () => {
@@ -47,71 +47,6 @@ export const getIndexData = async () => {
   }
 }
 
-// Subscribe to changes
-valDataStore.subscribe((value) => {
-  saveToLocalStorage('validatorUniverse', value)
-})
-
-systemInfo.subscribe((value) => {
-  saveToLocalStorage('systemInfo', value)
-})
-
-// export const getValidatorsOld = async () => {
-//   try {
-//     const currentUniverse = get(valDataStore)
-
-//     currentUniverse.current_profiles = [] // Clear previous data if needed
-
-//     const eligibleValidatorsPayload = validatorPayloads.eligible_validators_payload
-
-//     const eligibleValidatorsResponse = await getView(eligibleValidatorsPayload)
-
-//     currentUniverse.eligible_validators = eligibleValidatorsResponse[0]
-
-//     const allValidatorsPayload = validatorPayloads.current_validators_payload
-
-//     const allValidatorsResponse: string[] = await getView(allValidatorsPayload)
-//     console.log('allValidatorsResponse', JSON.stringify(allValidatorsResponse[0]))
-
-//     for (const address of allValidatorsResponse[0]) {
-//       console.log('address', address)
-//       // Fetch all vouchers
-//       const allVouchersPayload = validatorPayloads.all_vouchers_payload(address)
-//       const allVouchersResponse = await getView(allVouchersPayload)
-//       console.log(JSON.stringify(allVouchersResponse))
-//       // Fetch active vouchers
-//       const activeVouchersPayload = validatorPayloads.vouchers_in_val_set_payload(address)
-//       const activeVouchersResponse = await getView(activeVouchersPayload)
-
-//       // Fetch balance
-//       const balancePayload = commonPayloads.account_balance_payload(address)
-//       const balanceResponse = await getView(balancePayload)
-
-//       // Determine inactive vouchers
-//       const inactiveVouchers = allVouchersResponse.data?.filter(
-//         (voucher) => !activeVouchersResponse.data.includes(voucher),
-//       )
-
-//       // Construct the Validator object
-//       const validator: UserAccount = {
-//         address,
-//         active_vouchers: activeVouchersResponse.data,
-//         all_vouchers: inactiveVouchers,
-//         balance: balanceResponse.data,
-//       }
-
-//       currentUniverse.current_profiles.push(validator)
-//     }
-
-//     valDataStore.set(currentUniverse)
-
-//     // Save to local storage
-//     saveToLocalStorage('validatorUniverse', currentUniverse)
-//   } catch (error) {
-//     console.error(`Failed to set validators: ${error}`)
-//   }
-// }
-
 export const getValidators = async () => {
   const requests = [
     postViewFunc(validatorPayloads.eligible_validators_payload),
@@ -119,14 +54,15 @@ export const getValidators = async () => {
   ]
 
   const [eligible, active_set] = await Promise.all(requests)
-  const profiles = await fetchUserAccounts(active_set[0])
 
-  valDataStore.update((d) => {
-    d.eligible_validators = eligible[0]
-    d.current_list = active_set[0]
-    d.current_profiles = profiles
-    return d
-  })
+  const profiles =  await fetchUserAccounts(active_set[0])
+
+  let vals: valData = {
+    eligible_validators: eligible[0],
+    current_list: active_set[0],
+    current_profiles: profiles,
+  };
+  valDataStore.set(vals)
 }
 
 export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount[]> => {
@@ -192,7 +128,7 @@ export const getSystemInfo = async () => {
       epoch_duration: epoch,
       vdf: vdfDifficulty,
       infra_escrow: infraBalance[0],
-      validator_seats: chairs.data.current_seats,
+      validator_seats: chairs.seats_offered,
       boundary_status: boundaryStatus,
       ...indexData,
     }
@@ -206,7 +142,7 @@ export const getSystemInfo = async () => {
     systemInfo.set(newSystemInfo)
     pofInfo.set(pof)
     // Save to local storage
-    saveToLocalStorage('systemInfo', newSystemInfo)
+    // saveToLocalStorage('systemInfo', newSystemInfo)
   } catch (error) {
     console.error(`Failed to get system info: ${error}`)
   }

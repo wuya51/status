@@ -8,11 +8,11 @@
 
   let profiles: UserAccount[] = []
   onMount(async () => {
-    selectedAccount.subscribe((a) => {
-      console.log(a)
-      if (a) fetchUserAccounts([a.address])
-        .then(p => profiles = p)
-    });
+    // selectedAccount.subscribe((a) => {
+    //   console.log(a)
+    //   if (a) fetchUserAccounts([a.address])
+    //     .then(p => profiles = p)
+    // });
   })
 </script>
 
