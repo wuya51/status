@@ -37,7 +37,7 @@
 
                 <td>
                   {#await getErrors(addr)}
-                    load
+                    ...
                   {:then errs}
                     {errs}
                   {:catch error}

@@ -1,5 +1,7 @@
 <script lang="ts">
-    import type { UserAccount } from "../types"
+    import { postViewFunc } from "../api"
+    import { validator_grade_payload } from "../api/payloads/validators"
+import type { UserAccount } from "../types"
     import { scaleCoin } from "../utils/coin"
 
     export let profiles: UserAccount[] = [];
@@ -15,6 +17,7 @@
         <th>All Vouchers</th>
         <th>Active Vouchers</th>
         <th>Balance</th>
+        <th>Grade</th>
       </tr>
     </thead>
     <tbody>
@@ -26,6 +29,13 @@
 
             <td>{a.active_vouchers && a.active_vouchers.length || "no buddies"}</td>
             <td>{a.balance && `${scaleCoin(a.balance.unlocked)} / ${scaleCoin(a.balance.total)}` || 'no balance found' }</td>
+            <td>
+              {#await postViewFunc(validator_grade_payload(a.address))}
+              ...
+              {:then res }
+                {res[0]} : {res[1]}/{res[2]}
+              {/await}
+            </td>
           </tr>
         {/each}
       {/if}

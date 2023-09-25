@@ -8,13 +8,52 @@
 <Card title="Boundary Status" style="default">
   <div slot="body">
     {#if $systemInfo && $systemInfo.boundary_status}
-      <ul>
-        {#each Object.keys($systemInfo.boundary_status) as k }
-        <li>{k}: {$systemInfo.boundary_status[k]}</li>
+      Musical Chairs:
+      <li>
+        incoming_compliant:
+        {#each $systemInfo.boundary_status['incoming_compliant'] as e}
+          {e.slice(0, 5)} |
         {/each}
-      </ul>
-    {:else}
-      <span>Loading...</span>
+      </li>
+      <li>incoming_compliant_count: {$systemInfo.boundary_status['incoming_compliant_count']}</li>
+      <li>incoming_seats_offered: {$systemInfo.boundary_status['incoming_seats_offered']}</li>
+
+      Proof-of-Fee:
+      <li>
+        incoming_all_bidders:
+        {#each $systemInfo.boundary_status['incoming_all_bidders'] as e}
+          {e.slice(0, 5)} |
+        {/each}
+      </li>
+      <li>
+        incoming_only_qualified_bidders:
+        {#each $systemInfo.boundary_status['incoming_only_qualified_bidders'] as e}
+          {e.slice(0, 5)} |
+        {/each}
+      </li>
+
+      <li>auction_winners: {$systemInfo.boundary_status['incoming_final_set_size']}</li>
+      <li>incoming_fees: {$systemInfo.boundary_status['incoming_fees']}</li>
+      <li>incoming_fees_success: {$systemInfo.boundary_status['incoming_fees_success']}</li>
+
+      Reconfiguration:
+      <li>
+        {#each $systemInfo.boundary_status['incoming_proposed_new_validators'] as e}
+          {e.slice(0, 5)} |
+        {/each}
+      </li>
+      <li>
+        incoming_post_failover_check:
+        {#each $systemInfo.boundary_status['incoming_post_failover_check'] as e}
+          {e.slice(0, 5)} |
+        {/each}
+
+      </li>
+      <li>incoming_filled_seats: {$systemInfo.boundary_status['incoming_filled_seats']}</li>
+
+      <li>incoming_reconfig_success: {$systemInfo.boundary_status['incoming_reconfig_success']}</li>
+
+      <!-- <li>incoming_actual_vals: {$systemInfo.boundary_status['incoming_actual_vals']}</li> -->
     {/if}
   </div>
 </Card>
