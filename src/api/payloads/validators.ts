@@ -18,7 +18,6 @@ export const validator_grade_payload = (address: string): ViewObj => ({
   arguments: [address],
 })
 
-
 export const all_vouchers_payload = (address: string): ViewObj => ({
   function: '0x1::vouch::get_buddies',
   type_arguments: [],

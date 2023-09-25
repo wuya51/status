@@ -73,14 +73,15 @@ export const getIndex = async () => {
 //   }
 // }
 export const postViewFunc = async (payload: ViewObj) => {
-  return await api.post('/view', payload)
-  .then(r => {
-    return r.data
-  })
-  .catch(e => {
-    console.error(`Failed to get view ${payload}, message: ${e.message}`)
-    throw e
-  })
+  return await api
+    .post('/view', payload)
+    .then((r) => {
+      return r.data
+    })
+    .catch((e) => {
+      console.error(`Failed to get view ${payload}, message: ${e.message}`)
+      throw e
+    })
   //   return response.data
   // } catch (error) {
   //   // TODO: log errors
@@ -89,10 +90,13 @@ export const postViewFunc = async (payload: ViewObj) => {
   // }
 }
 export const getAccountResource = async (account: string, struct_path: string) => {
-  return await api.get(`/accounts/${account}/resource/${struct_path}`)
-  .then(r => {return r.data.data})
-  .catch(e => {
-    console.error(`Failed to get resource ${struct_path}, message: ${e.message}`)
-    throw e
-  })
+  return await api
+    .get(`/accounts/${account}/resource/${struct_path}`)
+    .then((r) => {
+      return r.data.data
+    })
+    .catch((e) => {
+      console.error(`Failed to get resource ${struct_path}, message: ${e.message}`)
+      throw e
+    })
 }

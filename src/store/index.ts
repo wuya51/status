@@ -5,7 +5,6 @@ import type { UserAccount, valData, IndexData, SystemInfo, ProofOfFee } from '..
 import * as systemPayloads from '../api/payloads/system'
 import * as validatorPayloads from '../api/payloads/validators'
 import * as commonPayloads from '../api/payloads/common'
-import { saveToLocalStorage, loadFromLocalStorage } from '../utils/localStorage'
 
 // // Initialize from local storage
 // const initialValidatorUniverse = loadFromLocalStorage('validatorUniverse') || {
@@ -31,7 +30,7 @@ export const commonInfo = writable<object>({})
 export const indexStore = writable<object>({})
 export const indexDataStore = writable<IndexData>()
 export const valDataStore = writable<valData>()
-export const selectedAccount = writable<User>({address: ""})
+export const selectedAccount = writable<User>({ address: '' })
 
 export const setAccount = (a: User) => {
   selectedAccount.set(a)
@@ -55,13 +54,13 @@ export const getValidators = async () => {
 
   const [eligible, active_set] = await Promise.all(requests)
 
-  const profiles =  await fetchUserAccounts(active_set[0])
+  const profiles = await fetchUserAccounts(active_set[0])
 
-  let vals: valData = {
+  const vals: valData = {
     eligible_validators: eligible[0],
     current_list: active_set[0],
     current_profiles: profiles,
-  };
+  }
   valDataStore.set(vals)
 }
 
