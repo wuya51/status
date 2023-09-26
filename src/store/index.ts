@@ -1,28 +1,41 @@
 import { writable, get } from 'svelte/store'
 import moment from 'moment'
-import { getView, getIndex } from '../api'
-import type { Validator, ValidatorUniverse, IndexData, SystemInfo } from '../types'
+import { postViewFunc, getIndex, getAccountResource } from '../api'
+import type { UserAccount, valData, IndexData, SystemInfo, ProofOfFee } from '../types'
 import * as systemPayloads from '../api/payloads/system'
 import * as validatorPayloads from '../api/payloads/validators'
 import * as commonPayloads from '../api/payloads/common'
-import { saveToLocalStorage, loadFromLocalStorage } from '../utils/localStorage'
 
-// Initialize from local storage
-const initialValidatorUniverse = loadFromLocalStorage('validatorUniverse') || {
-  current_validators: [],
-  eligible_validators: [],
-  validators: [],
+// // Initialize from local storage
+// const initialValidatorUniverse = loadFromLocalStorage('validatorUniverse') || {
+//   current_validators: [],
+//   eligible_validators: [],
+//   validators: [],
+// }
+
+export interface User {
+  address: string
 }
 
-const initialSystemInfo = loadFromLocalStorage('systemInfo') || null
+// const initialSystemInfo = loadFromLocalStorage('systemInfo')
+
+// const initialUser = loadFromLocalStorage('selectedUser')
 
 // Writable stores
 export const validatorList = writable<[]>([])
-export const systemInfo = writable<SystemInfo | null>(initialSystemInfo)
+export const systemInfo = writable<SystemInfo>()
+export const pofInfo = writable<ProofOfFee>()
+
 export const commonInfo = writable<object>({})
 export const indexStore = writable<object>({})
-export const indexDataStore = writable<IndexData | null>(null)
-export const validatorUniverse = writable<ValidatorUniverse>(initialValidatorUniverse)
+export const indexDataStore = writable<IndexData>()
+export const valDataStore = writable<valData>()
+export const selectedAccount = writable<User>({ address: '' })
+
+export const setAccount = (a: User) => {
+  selectedAccount.set(a)
+  // saveToLocalStorage('selectedUser', a)
+}
 
 export const getIndexData = async () => {
   try {
@@ -33,92 +46,102 @@ export const getIndexData = async () => {
   }
 }
 
-// Subscribe to changes
-validatorUniverse.subscribe((value) => {
-  saveToLocalStorage('validatorUniverse', value)
-})
+export const getValidators = async () => {
+  const requests = [
+    postViewFunc(validatorPayloads.eligible_validators_payload),
+    postViewFunc(validatorPayloads.current_validators_payload),
+  ]
 
-systemInfo.subscribe((value) => {
-  saveToLocalStorage('systemInfo', value)
-})
+  const [eligible, active_set] = await Promise.all(requests)
 
-export const setValidators = async () => {
-  try {
-    const currentUniverse = get(validatorUniverse)
+  const profiles = await fetchUserAccounts(active_set[0])
 
-    currentUniverse.validators = [] // Clear previous data if needed
+  const vals: valData = {
+    eligible_validators: eligible[0],
+    current_list: active_set[0],
+    current_profiles: profiles,
+  }
+  valDataStore.set(vals)
+}
 
-    const eligibleValidatorsPayload = validatorPayloads.eligible_validators_payload
+export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount[]> => {
+  if (accounts.length == 0) throw 'no accounts'
 
-    const eligibleValidatorsResponse = await getView(eligibleValidatorsPayload)
+  const accountsData: UserAccount[] = []
+  for (const a of accounts) {
+    const requests = [
+      postViewFunc(validatorPayloads.all_vouchers_payload(a)),
+      postViewFunc(validatorPayloads.vouchers_in_val_set_payload(a)),
+      postViewFunc(commonPayloads.account_balance_payload(a)),
+    ]
 
-    currentUniverse.eligible_validators = eligibleValidatorsResponse
+    const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
 
-    const allValidatorsPayload = validatorPayloads.current_validators_payload
-
-    const allValidatorsResponse = await getView(allValidatorsPayload)
-
-    for (const address of allValidatorsResponse[0]) {
-      // Fetch all vouchers
-      const allVouchersPayload = validatorPayloads.validator_vouchers_payload(address)
-      const allVouchersResponse = await getView(allVouchersPayload)
-
-      // Fetch active vouchers
-      const activeVouchersPayload = validatorPayloads.validator_valid_vouchers_payload(address)
-      const activeVouchersResponse = await getView(activeVouchersPayload)
-
-      // Fetch balance
-      const balancePayload = commonPayloads.account_balance_payload(address)
-      const balanceResponse = await getView(balancePayload)
-
-      // Determine inactive vouchers
-      const inactiveVouchers = allVouchersResponse.data?.filter(
-        (voucher) => !activeVouchersResponse.data.includes(voucher),
-      )
-
-      // Construct the Validator object
-      const validator: Validator = {
-        address,
-        activeVouchers: activeVouchersResponse.data,
-        inactiveVouchers,
-        balance: balanceResponse.data || 0,
-      }
-
-      currentUniverse.validators.push(validator)
+    const u: UserAccount = {
+      address: a,
+      active_vouchers: buddies_in_set_res[0],
+      all_vouchers: buddies_res[0],
+      balance: {
+        unlocked: bal_res[0],
+        total: bal_res[1],
+      },
     }
 
-    validatorUniverse.set(currentUniverse)
-
-    // Save to local storage
-    saveToLocalStorage('validatorUniverse', currentUniverse)
-  } catch (error) {
-    console.error(`Failed to set validators: ${error}`)
+    accountsData.push(u)
   }
+
+  return accountsData
 }
 
 export const getSystemInfo = async () => {
   try {
     // TODO(zoz): it would be better to let these be async and parallel
-    const fees = await getView(systemPayloads.fees_collected_payload)
-    const epochResponse = await getView(systemPayloads.epoch_length_payload)
-    const vdfDifficulty = await getView(systemPayloads.vdf_difficulty)
+    const requests = [
+      postViewFunc(systemPayloads.fees_collected_payload),
+      postViewFunc(systemPayloads.epoch_length_payload),
+      postViewFunc(systemPayloads.vdf_difficulty),
+      postViewFunc(systemPayloads.infra_balance),
+      postViewFunc(systemPayloads.getPoFBidders(true)),
+      postViewFunc(systemPayloads.getPoFBidders(false)),
+      getAccountResource('0x1', '0x1::musical_chairs::Chairs'),
+      getAccountResource('0x1', '0x1::epoch_boundary::BoundaryStatus'),
+    ]
+    const [
+      fees,
+      epochResponse,
+      vdfDifficulty,
+      infraBalance,
+      pofBiddersFiltered,
+      pofBidders,
+      chairs,
+      boundaryStatus,
+    ] = await Promise.all(requests)
 
     const duration = moment.duration(Number(epochResponse[0]), 'seconds') // Cast to Number
     const epoch = `${Math.floor(duration.asHours())} hrs : ${duration.minutes()} mins`
     const indexData = get(indexDataStore)
 
     // TODO(zoz): make this an interface
-    const newSystemInfo = {
+    const newSystemInfo: SystemInfo = {
       fees: fees[0],
       epoch_duration: epoch,
       vdf: vdfDifficulty,
+      infra_escrow: infraBalance[0],
+      validator_seats: chairs.seats_offered,
+      boundary_status: boundaryStatus,
       ...indexData,
     }
 
-    systemInfo.set(newSystemInfo)
+    const pof: ProofOfFee = {
+      bidders: pofBidders[0],
+      bids: pofBidders[1],
+      qualified: pofBiddersFiltered[0],
+    }
 
+    systemInfo.set(newSystemInfo)
+    pofInfo.set(pof)
     // Save to local storage
-    saveToLocalStorage('systemInfo', newSystemInfo)
+    // saveToLocalStorage('systemInfo', newSystemInfo)
   } catch (error) {
     console.error(`Failed to get system info: ${error}`)
   }
@@ -130,7 +153,7 @@ export const refresh = async () => {
     // this should be done async, without the await
     getIndexData()
     getSystemInfo()
-    setValidators()
+    getValidators()
   } catch (error) {
     console.error(`Failed to refresh: ${error}`)
   }

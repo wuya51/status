@@ -3,9 +3,12 @@
 
   import { onMount } from 'svelte'
   import { initApi } from '../api'
-  import { refresh } from '../store'
+  import { refresh, selectedAccount } from '../store'
   import SystemInfo from '../ui/SystemInfo.svelte'
   import Validators from '../ui/Validators.svelte'
+  import AccountView from '../ui/AccountView.svelte'
+  import PoFView from '../ui/PoFView.svelte'
+  import BoundaryStatus from '../ui/BoundaryStatus.svelte'
 
   let url
   let note
@@ -28,14 +31,18 @@
   <h1>status</h1>
 
   <p>
-    api url: {url}
+    api url: <a href="{url}spec" target="_blank">{url} </a>
     note: {note}
+    account: {$selectedAccount.address}
   </p>
 
   <div class="container">
     <div class="uk-flex uk-flex-wrap">
       <SystemInfo />
+      <BoundaryStatus />
       <Validators />
+      <AccountView />
+      <PoFView />
     </div>
   </div>
 </main>

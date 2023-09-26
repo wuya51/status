@@ -22,23 +22,37 @@ export interface SystemInfo {
   oldest_block_height: string
   block_height: string
   git_hash: string
+  infra_escrow: number
+  validator_seats: number
+  vdf: number[]
+  boundary_status: object
 }
 
+export interface ProofOfFee {
+  bidders: string[]
+  bids: number[]
+  qualified: string[]
+}
 export interface ViewObj {
   function: string
   type_arguments: string[]
-  arguments: string[]
+  arguments: string[] | boolean[]
 }
 
-export interface Validator {
+export interface SlowWalletBalance {
+  unlocked: number
+  total: number
+}
+export interface UserAccount {
+  // push(u: UserAccount): unknown
   address: string
-  activeVouchers: string[] // Array of addresses
-  inactiveVouchers: string[] // Array of addresses
-  balance: number
+  active_vouchers?: string[] // Array of addresses
+  all_vouchers?: string[] // Array of addresses
+  balance?: SlowWalletBalance
 }
 
-export interface ValidatorUniverse {
-  current_validators: string[] // Array of addresses
+export interface valData {
+  current_list: string[] // Array of addresses
   eligible_validators: string[] // Array of addresses
-  validators: Validator[]
+  current_profiles: UserAccount[]
 }
