@@ -6,20 +6,9 @@ import * as systemPayloads from '../api/payloads/system'
 import * as validatorPayloads from '../api/payloads/validators'
 import * as commonPayloads from '../api/payloads/common'
 
-// // Initialize from local storage
-// const initialValidatorUniverse = loadFromLocalStorage('validatorUniverse') || {
-//   current_validators: [],
-//   eligible_validators: [],
-//   validators: [],
-// }
-
 export interface User {
   address: string
 }
-
-// const initialSystemInfo = loadFromLocalStorage('systemInfo')
-
-// const initialUser = loadFromLocalStorage('selectedUser')
 
 // Writable stores
 export const validatorList = writable<[]>([])
@@ -30,10 +19,12 @@ export const commonInfo = writable<object>({})
 export const indexStore = writable<object>({})
 export const indexDataStore = writable<IndexData>()
 export const valDataStore = writable<valData>()
-export const selectedAccount = writable<User>({ address: '' })
+export const selectedAccount = writable<UserAccount>({ address: '' })
 
-export const setAccount = (a: User) => {
-  selectedAccount.set(a)
+export const setAccount = (address: string) => {
+  selectedAccount.set({
+    address,
+  })
   // saveToLocalStorage('selectedUser', a)
 }
 
@@ -76,6 +67,9 @@ export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount
     ]
 
     const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
+
+    console.log(buddies_res)
+    console.log(buddies_in_set_res)
 
     const u: UserAccount = {
       address: a,

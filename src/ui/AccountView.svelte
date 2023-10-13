@@ -2,18 +2,10 @@
   import Card from './Card.svelte'
   import AccountTable from './AccountTable.svelte'
 
-  import { fetchUserAccounts, selectedAccount } from '../store'
-  import { onMount } from 'svelte'
+  import { selectedAccount } from '../store'
   import type { UserAccount } from '../types'
 
   let profiles: UserAccount[] = []
-  onMount(async () => {
-    // selectedAccount.subscribe((a) => {
-    //   console.log(a)
-    //   if (a) fetchUserAccounts([a.address])
-    //     .then(p => profiles = p)
-    // });
-  })
 </script>
 
 <main>

@@ -54,6 +54,12 @@
           {e.slice(0, 5)} |{'\t'}
         {/each}
       </li>
+      <li>
+        incoming_missing_configs
+        {#each $systemInfo.boundary_status['incoming_vals_missing_configs'] as e}
+          {e.slice(0, 5)} |{'\t'}
+        {/each}
+      </li>
 
       <li>
         incoming_actual_vals:

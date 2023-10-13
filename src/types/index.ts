@@ -44,7 +44,6 @@ export interface SlowWalletBalance {
   total: number
 }
 export interface UserAccount {
-  // push(u: UserAccount): unknown
   address: string
   active_vouchers?: string[] // Array of addresses
   all_vouchers?: string[] // Array of addresses
