@@ -5,9 +5,3 @@ export const account_balance_payload = (address: string): ViewObj => ({
   type_arguments: [],
   arguments: [address],
 })
-
-// export const account_balance_payload = (address: string): ViewObj => ({
-//   function: '0x1::slow_wallet::unlocked_amount',
-//   type_arguments: [],
-//   arguments: [address],
-// })

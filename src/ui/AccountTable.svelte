@@ -16,7 +16,8 @@
       <tr>
         <th>Address</th>
         <th>All Vouchers</th>
-        <th>Active Vouchers</th>
+        <th>Valid Vouchers</th>
+        <th>Valid in Set</th>
         <th>Balance</th>
         <th>Grade</th>
       </tr>
@@ -28,9 +29,9 @@
             <td> <button on:click={() => setAccount(a.address)} class="uk-button
             uk-button-link"> {a.address.slice(0, 5)}
             </button></td>
-            <td>{(a.all_vouchers && a.all_vouchers.length) || 'no buddies'}</td>
-
-            <td>{(a.active_vouchers && a.active_vouchers.length) || 'no buddies'}</td>
+            <td>{(a.all_vouchers && a.all_vouchers.length) || '--'}</td>
+            <td>{(a.valid_vouchers && a.valid_vouchers.length) || '--'}</td>
+            <td>{(a.active_vouchers) || '--'}</td>
             <td
               >{(a.balance && `${scaleCoin(a.balance.unlocked)} / ${scaleCoin(a.balance.total)}`) ||
                 'no balance found'}</td

@@ -3,7 +3,7 @@ import { TESTNET_SEED_NODES } from '../constants'
 import type { ViewObj } from '../types'
 import { apiUrl, apiUrlNote } from '../store'
 
-const DEBUG_URL: string = import.meta.env.DEBUG_URL
+const DEBUG_URL: string = "http://134.209.32.159:8080/v1"
 
 export let api
 
@@ -77,16 +77,6 @@ export const getIndex = async () => {
   }
 }
 
-// export const postViewFunc = async (payload: ViewObj) => {
-//   try {
-//     const response = await api.post('/view', payload)
-//     return response.data
-//   } catch (error) {
-//     // TODO: log errors
-//     console.error(`Failed to get view ${payload.function}, message: ${error.message}`)
-//     throw error
-//   }
-// }
 export const postViewFunc = async (payload: ViewObj) => {
   return await api
     .post('/view', payload)
@@ -95,14 +85,7 @@ export const postViewFunc = async (payload: ViewObj) => {
     })
     .catch((e) => {
       console.error(`Failed to get view ${payload}, message: ${e.message}`)
-      throw e
     })
-  //   return response.data
-  // } catch (error) {
-  //   // TODO: log errors
-  //   console.error(`Failed to get view ${payload.function}, message: ${error.message}`)
-  //   throw error
-  // }
 }
 export const getAccountResource = async (account: string, struct_path: string) => {
   return await api

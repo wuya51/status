@@ -65,17 +65,18 @@ export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount
   for (const a of accounts) {
     const requests = [
       postViewFunc(validatorPayloads.all_vouchers_payload(a)),
+      postViewFunc(validatorPayloads.vouchers_valid(a)),
       postViewFunc(validatorPayloads.vouchers_in_val_set_payload(a)),
       postViewFunc(commonPayloads.account_balance_payload(a)),
     ]
 
-    const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
+    const [buddies_res, buddies_valid, buddies_in_set_res, bal_res] = await Promise.all(requests)
 
-    console.log(buddies_res)
 
     const u: UserAccount = {
       address: a,
-      active_vouchers: buddies_in_set_res[0],
+      active_vouchers: buddies_in_set_res[1],
+      valid_vouchers: buddies_valid[0],
       all_vouchers: buddies_res[0],
       balance: {
         unlocked: bal_res[0],

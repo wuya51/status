@@ -45,13 +45,14 @@ export interface SlowWalletBalance {
 }
 export interface UserAccount {
   address: string
-  active_vouchers?: string[] // Array of addresses
-  all_vouchers?: string[] // Array of addresses
+  active_vouchers?: string[]
+  valid_vouchers?: string[]
+  all_vouchers?: string[]
   balance?: SlowWalletBalance
 }
 
 export interface valData {
-  current_list: string[] // Array of addresses
-  eligible_validators: string[] // Array of addresses
+  current_list: string[]
+  eligible_validators: string[]
   current_profiles: UserAccount[]
 }

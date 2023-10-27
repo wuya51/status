@@ -24,8 +24,14 @@ export const all_vouchers_payload = (address: string): ViewObj => ({
   arguments: [address],
 })
 
-export const vouchers_in_val_set_payload = (address: string): ViewObj => ({
+export const vouchers_valid = (address: string): ViewObj => ({
   function: '0x1::vouch::true_friends',
+  type_arguments: [],
+  arguments: [address],
+})
+
+export const vouchers_in_val_set_payload = (address: string): ViewObj => ({
+  function: '0x1::proof_of_fee::get_valid_vouchers_in_set',
   type_arguments: [],
   arguments: [address],
 })
