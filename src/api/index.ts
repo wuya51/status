@@ -1,17 +1,30 @@
 import axios from 'axios'
-import { makeUrl, TESTNET_SEED_NODES } from '../constants'
+import { TESTNET_SEED_NODES } from '../constants'
 import type { ViewObj } from '../types'
-import DEBUG_URL from '$env/static/private'
+import { apiUrl, apiUrlNote } from '../store'
 
-let api
+const DEBUG_URL: string = import.meta.env.DEBUG_URL
+
+export let api
 
 export const initApi = async () => {
-  const { apiUrl, note } = await fetchAPIConfig()
+  const { url, note } = await fetchAPIConfig()
 
   api = axios.create({
-    baseURL: apiUrl || makeUrl(),
+    baseURL: url
   })
+  apiUrl.set(url)
+  apiUrlNote.set(note)
+
   return { apiUrl, note }
+}
+
+export const setApi = (url: string) => {
+  api = axios.create({
+    baseURL: url
+  })
+  apiUrl.set(url)
+  apiUrlNote.set("override")
 }
 
 async function checkAPIConnectivity(url) {
@@ -24,26 +37,26 @@ async function checkAPIConnectivity(url) {
 }
 
 const fetchAPIConfig = async () => {
-  let apiUrl = DEBUG_URL //|| makeUrl()
+  let url = DEBUG_URL
   let note
 
-  if (!apiUrl) {
+  if (!url) {
     try {
       const response = await axios.get(TESTNET_SEED_NODES)
       const data = response.data
 
       for (const node of data.nodes) {
-        const url = `${node.url}/v1`
-        const isConnected = await checkAPIConnectivity(url)
+        const formatted_u = `${node.url}/v1`
+        const isConnected = await checkAPIConnectivity(formatted_u)
 
         if (isConnected) {
-          apiUrl = url
+          url = formatted_u
           note = node.note
           break
         }
       }
 
-      if (!apiUrl) {
+      if (!url) {
         console.error('Failed to connect to any API URL.')
       }
     } catch (error) {
@@ -51,7 +64,7 @@ const fetchAPIConfig = async () => {
     }
   }
 
-  return { apiUrl, note }
+  return { url, note }
 }
 
 export const getIndex = async () => {

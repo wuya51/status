@@ -11,6 +11,9 @@ export interface User {
 }
 
 // Writable stores
+export const apiUrl = writable<string>()
+export const apiUrlNote = writable<string>()
+
 export const validatorList = writable<[]>([])
 export const systemInfo = writable<SystemInfo>()
 export const pofInfo = writable<ProofOfFee>()

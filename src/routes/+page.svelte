@@ -2,21 +2,16 @@
   import 'uikit/dist/css/uikit.min.css'
 
   import { onMount } from 'svelte'
-  import { initApi } from '../api'
-  import { refresh, selectedAccount } from '../store'
+  import { initApi, setApi } from '../api'
+  import { refresh, selectedAccount, apiUrl, apiUrlNote } from '../store'
   import SystemInfo from '../ui/SystemInfo.svelte'
   import Validators from '../ui/Validators.svelte'
   import AccountView from '../ui/AccountView.svelte'
   import PoFView from '../ui/PoFView.svelte'
   import BoundaryStatus from '../ui/BoundaryStatus.svelte'
 
-  let url
-  let note
-
   onMount(async () => {
-    const apiConfig = await initApi()
-    url = apiConfig.apiUrl
-    note = apiConfig.note
+    await initApi() // ONLY DO THIS ONCE ON LOAD
 
     refresh()
 
@@ -30,19 +25,36 @@
 <main class="uk-container">
   <h1>status</h1>
 
-  <p>
-    {#if url}
-      api url: <a href="{url}spec" target="_blank">{url} </a>
-    {/if}
-    note: {note}
-    account: {$selectedAccount.address}
-  </p>
+  <div class="uk-grid uk-row">
+    <div class="uk-column-1-3">
+      <button class="uk-button uk-button-default" on:click={refresh}>refresh</button>
+    </div>
+
+    <!-- api url: <a href="{$apiUrl}spec" target="_blank">{$apiUrl} </a> -->
+    <div class="uk-margin uk-column-1-3">
+      {#if $apiUrl}
+        <input
+          class="uk-input"
+          type="text"
+          placeholder={$apiUrl}
+          aria-label="Input"
+          bind:value={$apiUrl}
+        />
+        <button class="uk-button uk-button-default" on:click={setApi($apiUrl)}>update url</button>
+        note: {$apiUrlNote}
+      {/if}
+    </div>
+  </div>
 
   <div class="container">
     <div class="uk-flex uk-flex-wrap">
       <SystemInfo />
       <BoundaryStatus />
       <Validators />
+      {#if $selectedAccount && $selectedAccount.address}
+        account: {$selectedAccount.address}
+      {/if}
+
       <AccountView />
       <PoFView />
     </div>
