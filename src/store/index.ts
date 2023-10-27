@@ -71,6 +71,8 @@ export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount
 
     const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
 
+    console.log(buddies_res)
+
     const u: UserAccount = {
       address: a,
       active_vouchers: buddies_in_set_res[0],

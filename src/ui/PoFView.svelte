@@ -1,13 +1,12 @@
 <script lang="ts">
   import Card from './Card.svelte'
-  import { pofInfo } from '../store'
+  import { pofInfo, setAccount } from '../store'
   import { postViewFunc } from '../api'
   import { getPoFErrors } from '../api/payloads/system'
   import { mapPoFErrors } from '../types/proof_of_fee'
 
   const getErrors = async (addr: string): Promise<string[]> => {
-    return postViewFunc(getPoFErrors(addr))
-    .then((res) => {
+    return postViewFunc(getPoFErrors(addr)).then((res) => {
       return mapPoFErrors(res[0])
     })
   }
@@ -31,7 +30,13 @@
           {#if $pofInfo && $pofInfo.bidders.length > 0}
             {#each $pofInfo.bidders as addr, idx}
               <tr>
-                <td>{addr.slice(0, 5)}</td>
+                <td
+                  ><button
+                    on:click={() => setAccount(addr)}
+                    class="uk-button uk-button-link"
+                    >{addr.slice(0, 5)}
+                  </button></td
+                >
                 <td>{$pofInfo.bids[idx]}</td>
                 <td>{$pofInfo.qualified.includes(addr)}</td>
 

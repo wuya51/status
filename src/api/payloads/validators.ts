@@ -19,13 +19,13 @@ export const validator_grade_payload = (address: string): ViewObj => ({
 })
 
 export const all_vouchers_payload = (address: string): ViewObj => ({
-  function: '0x1::vouch::true_friends',
+  function: '0x1::vouch::all_vouchers',
   type_arguments: [],
   arguments: [address],
 })
 
 export const vouchers_in_val_set_payload = (address: string): ViewObj => ({
-  function: '0x1::vouch::all_not_expired',
+  function: '0x1::vouch::true_friends',
   type_arguments: [],
   arguments: [address],
 })

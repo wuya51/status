@@ -48,15 +48,17 @@
 
   <div class="container">
     <div class="uk-flex uk-flex-wrap">
-      <SystemInfo />
-      <BoundaryStatus />
-      <Validators />
+
       {#if $selectedAccount && $selectedAccount.address}
-        account: {$selectedAccount.address}
+        <AccountView />
+        {:else}
+        <SystemInfo />
+        <BoundaryStatus />
+        <Validators />
+        <PoFView />
       {/if}
 
-      <AccountView />
-      <PoFView />
+
     </div>
   </div>
 </main>

@@ -1,19 +1,23 @@
 <script lang="ts">
   import Card from './Card.svelte'
   import AccountTable from './AccountTable.svelte'
+  import { fetchUserAccounts, selectedAccount } from '../store'
 
-  import { selectedAccount } from '../store'
-  import type { UserAccount } from '../types'
 
-  let profiles: UserAccount[] = []
 </script>
 
 <main>
-  {#if $selectedAccount && profiles.length > 0 }
+  {#if $selectedAccount }
+  {#await fetchUserAccounts([$selectedAccount.address])}
+  ...
+  {:then profiles}
   <Card title="User: {$selectedAccount.address.slice(0,5)}" style="primary">
+
     <div slot="body">
-      <AccountTable {profiles} />
+      <button class="uk-button uk-button-default" on:click={() => { selectedAccount.set(null) } }><span>close</span></button>
+      <AccountTable profiles={profiles} />
     </div>
   </Card>
+  {/await}
   {/if}
 </main>
