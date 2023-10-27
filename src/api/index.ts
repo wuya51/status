@@ -11,7 +11,7 @@ export const initApi = async () => {
   const { url, note } = await fetchAPIConfig()
 
   api = axios.create({
-    baseURL: url
+    baseURL: url,
   })
   apiUrl.set(url)
   apiUrlNote.set(note)
@@ -21,10 +21,10 @@ export const initApi = async () => {
 
 export const setApi = (url: string) => {
   api = axios.create({
-    baseURL: url
+    baseURL: url,
   })
   apiUrl.set(url)
-  apiUrlNote.set("override")
+  apiUrlNote.set('override')
 }
 
 async function checkAPIConnectivity(url) {
