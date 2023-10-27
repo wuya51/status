@@ -31,7 +31,9 @@
   <h1>status</h1>
 
   <p>
-    api url: <a href="{url}spec" target="_blank">{url} </a>
+    {#if url}
+      api url: <a href="{url}spec" target="_blank">{url} </a>
+    {/if}
     note: {note}
     account: {$selectedAccount.address}
   </p>
