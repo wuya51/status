@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { makeUrl, TESTNET_SEED_NODES } from '../constants'
 import type { ViewObj } from '../types'
+import DEBUG_URL from '$env/static/private'
 
 let api
 
@@ -23,7 +24,7 @@ async function checkAPIConnectivity(url) {
 }
 
 const fetchAPIConfig = async () => {
-  let apiUrl = import.meta.env.VITE_API_URL || makeUrl()
+  let apiUrl = DEBUG_URL //|| makeUrl()
   let note
 
   if (!apiUrl) {
@@ -32,10 +33,11 @@ const fetchAPIConfig = async () => {
       const data = response.data
 
       for (const node of data.nodes) {
-        const isConnected = await checkAPIConnectivity(node.url)
+        const url = `${node.url}/v1`
+        const isConnected = await checkAPIConnectivity(url)
 
         if (isConnected) {
-          apiUrl = node.url
+          apiUrl = url
           note = node.note
           break
         }

@@ -18,10 +18,16 @@ yarn deploy
 ```
 
 ## To Dev
+
 ```
 yarn
 yarn dev
 
+```
+You can configure a `.env` file in the root to include a known URL for
+debugging. Note: include the port of the API.
+```
+DEBUG_URL="http://134.209.32.159:8080"
 ```
 
 ## API Views
