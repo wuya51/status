@@ -7,8 +7,8 @@
   import SystemInfo from '../ui/SystemInfo.svelte'
   import Validators from '../ui/Validators.svelte'
   import AccountView from '../ui/AccountView.svelte'
-  import PoFView from '../ui/PoFView.svelte'
   import BoundaryStatus from '../ui/BoundaryStatus.svelte'
+  import ValidatorUniverse from '../ui/ValidatorUniverse.svelte'
 
   onMount(async () => {
     await initApi() // ONLY DO THIS ONCE ON LOAD
@@ -48,17 +48,14 @@
 
   <div class="container">
     <div class="uk-flex uk-flex-wrap">
-
       {#if $selectedAccount && $selectedAccount.address}
         <AccountView />
-        {:else}
+      {:else}
         <SystemInfo />
         <BoundaryStatus />
         <Validators />
-        <PoFView />
+        <ValidatorUniverse />
       {/if}
-
-
     </div>
   </div>
 </main>
