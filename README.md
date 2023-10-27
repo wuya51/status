@@ -1,6 +1,13 @@
 # Status
-A tool to check the status of a OL network. This is used as a test tool to easily and quickly verify changes within the network. 
+A tool to check the status of a OL network. This is used as a test tool to
+easily and quickly verify changes within the network.
 
+Hosted Here
+[https://0lnetworkcommunity.github.io/status/](https://0lnetworkcommunity.github.io/status/)
+
+Hack: For now you need to allow "mixed content" for that site:
+
+![instructions](allow_instructions.png)
 
 ## To Deploy
 ```
@@ -33,7 +40,7 @@ yarn dev
 - eligible validators
 
 #### balance info
-- wallet balances 
+- wallet balances
 
 #### vouch
 - validator vouches
