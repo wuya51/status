@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { TESTNET_SEED_NODES } from '../constants'
-import type { ViewObj } from '../types'
 import { apiUrl, apiUrlNote } from '../store'
+import type { EventObj, ViewObj } from './payloads/types'
 
-const DEBUG_URL: string = "https://testnet-rpc.openlibra.space:8080/v1/"
+const DEBUG_URL: string = 'https://testnet-rpc.openlibra.space:8080/v1/'
 
 export let api
 
@@ -67,6 +67,18 @@ const fetchAPIConfig = async () => {
   return { url, note }
 }
 
+export const getAccountResource = async (account: string, struct_path: string) => {
+  return await api
+    .get(`/accounts/${account}/resource/${struct_path}`)
+    .then((r) => {
+      return r.data.data
+    })
+    .catch((e) => {
+      console.error(`Failed to get resource ${struct_path}, message: ${e.message}`)
+      throw e
+    })
+}
+
 export const getIndex = async () => {
   try {
     const response = await api.get('')
@@ -77,16 +89,6 @@ export const getIndex = async () => {
   }
 }
 
-// export const postViewFunc = async (payload: ViewObj) => {
-//   try {
-//     const response = await api.post('/view', payload)
-//     return response.data
-//   } catch (error) {
-//     // TODO: log errors
-//     console.error(`Failed to get view ${payload.function}, message: ${error.message}`)
-//     throw error
-//   }
-// }
 export const postViewFunc = async (payload: ViewObj) => {
   return await api
     .post('/view', payload)
@@ -97,21 +99,16 @@ export const postViewFunc = async (payload: ViewObj) => {
       console.error(`Failed to get view ${payload}, message: ${e.message}`)
       throw e
     })
-  //   return response.data
-  // } catch (error) {
-  //   // TODO: log errors
-  //   console.error(`Failed to get view ${payload.function}, message: ${error.message}`)
-  //   throw error
-  // }
 }
-export const getAccountResource = async (account: string, struct_path: string) => {
+
+export const getEventList = async (payload: EventObj) => {
   return await api
-    .get(`/accounts/${account}/resource/${struct_path}`)
+    .get(`/accounts/${payload.address}/events/${payload.struct}/${payload.handler_field}`)
     .then((r) => {
-      return r.data.data
+      return r.data
     })
     .catch((e) => {
-      console.error(`Failed to get resource ${struct_path}, message: ${e.message}`)
+      console.error(`Failed to get events ${payload}, message: ${e.message}`)
       throw e
     })
 }

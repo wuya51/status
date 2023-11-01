@@ -1,4 +1,4 @@
-import type { ViewObj } from '../../types'
+import type { ViewObj } from './types'
 
 export const current_validators_payload: ViewObj = {
   function: '0x1::stake::get_current_validators',

@@ -1,4 +1,4 @@
-import type { ViewObj } from '../../types'
+import type { ViewObj } from './types'
 
 export const fees_collected_payload: ViewObj = {
   function: '0x1::transaction_fee::system_fees_collected',

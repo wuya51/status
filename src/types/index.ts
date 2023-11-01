@@ -33,11 +33,6 @@ export interface ProofOfFee {
   bids: number[]
   qualified: string[]
 }
-export interface ViewObj {
-  function: string
-  type_arguments: string[]
-  arguments: string[] | boolean[]
-}
 
 export interface SlowWalletBalance {
   unlocked: number
