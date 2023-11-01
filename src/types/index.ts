@@ -50,3 +50,14 @@ export interface valData {
   eligible_validators: string[] // Array of addresses
   current_profiles: UserAccount[]
 }
+
+
+export interface govEventData {
+  data: {
+    num_votes: string,
+    proposal_id: string,
+    should_pass: boolean,
+    stake_pool: string,
+    voter: string
+  }
+}

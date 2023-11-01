@@ -1,10 +1,11 @@
 import { writable, get } from 'svelte/store'
 import moment from 'moment'
-import { postViewFunc, getIndex, getAccountResource } from '../api'
-import type { UserAccount, valData, IndexData, SystemInfo, ProofOfFee } from '../types'
+import { postViewFunc, getIndex, getAccountResource, getEventList } from '../api'
+import type { UserAccount, valData, IndexData, SystemInfo, ProofOfFee, govEventData } from '../types'
 import * as systemPayloads from '../api/payloads/system'
 import * as validatorPayloads from '../api/payloads/validators'
 import * as commonPayloads from '../api/payloads/common'
+import { govEvents } from '../api/payloads/events'
 
 export interface User {
   address: string
@@ -23,6 +24,7 @@ export const indexStore = writable<object>({})
 export const indexDataStore = writable<IndexData>()
 export const valDataStore = writable<valData>()
 export const selectedAccount = writable<UserAccount>({ address: '' })
+export const govStore = writable<govEventData[]>()
 
 export const setAccount = (address: string) => {
   selectedAccount.set({
@@ -70,8 +72,6 @@ export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount
     ]
 
     const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
-
-    console.log(buddies_res)
 
     const u: UserAccount = {
       address: a,
@@ -150,6 +150,8 @@ export const refresh = async () => {
     getIndexData()
     getSystemInfo()
     getValidators()
+    getEventList(govEvents())
+    .then(res => govStore.set(res))
   } catch (error) {
     console.error(`Failed to refresh: ${error}`)
   }

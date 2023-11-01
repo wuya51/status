@@ -23,7 +23,7 @@
   })
 </script>
 
-<main class="uk-container">
+<main class="uk-container uk-text-small">
   <h1>status</h1>
 
   <div class="uk-grid uk-row">
@@ -47,16 +47,16 @@
     </div>
   </div>
 
-  <div class="container">
+  <div>
     <div class="uk-flex uk-flex-wrap">
       {#if $selectedAccount && $selectedAccount.address}
         <AccountView />
       {:else}
-        <GovEvents/>
         <SystemInfo />
         <BoundaryStatus />
         <Validators />
         <ValidatorUniverse />
+        <GovEvents/>
       {/if}
     </div>
   </div>
