@@ -4,6 +4,6 @@
 </script>
 
 <div class="uk-card uk-card-{style} uk-card-body uk-margin-left uk-margin-bottom">
-  <h5 class="uk-card-title">{title}</h5>
+  <h5 class="uk-card-title uk-text-uppercase uk-text-light">{title}</h5>
   <slot name="body"/>
 </div>

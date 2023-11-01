@@ -9,6 +9,7 @@
   import AccountView from '../ui/AccountView.svelte'
   import BoundaryStatus from '../ui/BoundaryStatus.svelte'
   import ValidatorUniverse from '../ui/ValidatorUniverse.svelte'
+    import GovEvents from '../ui/GovEvents.svelte'
 
   onMount(async () => {
     await initApi() // ONLY DO THIS ONCE ON LOAD
@@ -51,6 +52,7 @@
       {#if $selectedAccount && $selectedAccount.address}
         <AccountView />
       {:else}
+        <GovEvents/>
         <SystemInfo />
         <BoundaryStatus />
         <Validators />
