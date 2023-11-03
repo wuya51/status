@@ -5,9 +5,6 @@ easily and quickly verify changes within the network.
 Hosted Here
 [https://0lnetworkcommunity.github.io/status/](https://0lnetworkcommunity.github.io/status/)
 
-Hack: For now you need to allow "mixed content" for that site:
-
-![instructions](allow_instructions.png)
 
 ## To Deploy
 ```
