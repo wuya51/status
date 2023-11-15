@@ -1,6 +1,5 @@
 # Status
-A tool to check the status of a OL network. This is used as a test tool to
-easily and quickly verify changes within the network.
+A tool to check the status of a 0L network. This is used as a test tool to easily and quickly verify changes within the network.
 
 Hosted Here
 [https://0lnetworkcommunity.github.io/status/](https://0lnetworkcommunity.github.io/status/)
