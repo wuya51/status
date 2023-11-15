@@ -30,7 +30,7 @@
 
 <main>
 
-  {#if $govStore}
+  {#if $govStore && $govStore.length > 0}
 
   <Card title="Upgrade Votes" style="default">
 
@@ -45,7 +45,7 @@
         </tr>
       </thead>
       <tbody>
-        {#if $govStore.length > 0}
+
           {#each $govStore as a}
             {#if a.data.proposal_id == highest_proposal}
             <tr>
@@ -55,7 +55,6 @@
             </tr>
             {/if}
           {/each}
-        {/if}
       </tbody>
     </table>
     </div>
