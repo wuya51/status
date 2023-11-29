@@ -1,4 +1,4 @@
-// https://testnet-rpc.openlibra.space:8080/v1/accounts/0x1/events/0x1::diem_governance::GovernanceEvents/vote_events
+// https://rpc.openlibra.space:8080/v1/accounts/0x1/events/0x1::diem_governance::GovernanceEvents/vote_events
 
 import type { EventObj } from './types'
 
