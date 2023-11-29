@@ -3,7 +3,7 @@ import { TESTNET_SEED_NODES } from '../constants'
 import { apiUrl, apiUrlNote } from '../store'
 import type { EventObj, ViewObj } from './payloads/types'
 
-const DEBUG_URL: string = 'https://testnet-rpc.openlibra.space:8080/v1/'
+const DEBUG_URL: string = 'https://rpc.openlibra.space:8080/v1/'
 
 export let api
 
