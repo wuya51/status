@@ -8,8 +8,7 @@
   import Validators from '../ui/Validators.svelte'
   import AccountView from '../ui/AccountView.svelte'
   import BoundaryStatus from '../ui/BoundaryStatus.svelte'
-  import ValidatorUniverse from '../ui/ValidatorUniverse.svelte'
-    import GovEvents from '../ui/GovEvents.svelte'
+    // import GovEvents from '../ui/GovEvents.svelte'
 
   onMount(async () => {
     await initApi() // ONLY DO THIS ONCE ON LOAD

@@ -20,8 +20,8 @@
     <thead>
       <tr>
         <th>Address</th>
+        <th>In Set</th>
         <th>Bid</th>
-        <!-- <th>All Vouchers</th> -->
         <th>Active Vouchers</th>
         <th>Balance</th>
         <th>Grade</th>
@@ -40,6 +40,10 @@
                 {a.address.slice(0, 5)}
               </button></td
             >
+
+            <td>
+              {a.in_val_set}
+            </td>
             <td>
               {#await postViewFunc(validator_bid_payload(a.address))}
                 ...

@@ -65,7 +65,7 @@ export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount
 
   const accountsData: UserAccount[] = []
   for (const address of accounts) {
-    let u: UserAccount = {
+    const u: UserAccount = {
       address,
     }
 

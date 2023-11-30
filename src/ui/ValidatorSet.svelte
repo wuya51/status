@@ -4,11 +4,23 @@
   import AccountTable from './AccountTable.svelte'
 
   let profiles: UserAccount[]
-  valDataStore.subscribe((e) => {
-    if (e) {
-      fetchUserAccounts(e.eligible_validators).then((r) => (profiles = r))
+  valDataStore.subscribe((valState) => {
+    if (valState) {
+      fetchUserAccounts(valState.eligible_validators).then((r) =>
+      {
+        r.map((el) => {
+          el.in_val_set = valState.current_list.includes(el.address);
+        })
+        r.sort(sortVals)
+        profiles = r
+      })
     }
   })
+
+  function sortVals(a: UserAccount, b: UserAccount) {
+    if (a.in_val_set) return -1 // sort to top
+    else return 1
+  }
 </script>
 
 <main>

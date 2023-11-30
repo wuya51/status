@@ -41,6 +41,7 @@ export interface SlowWalletBalance {
 }
 export interface UserAccount {
   address: string
+  in_val_set?: boolean,
   active_vouchers?: string[] // Array of addresses
   all_vouchers?: string[] // Array of addresses
   balance?: SlowWalletBalance
