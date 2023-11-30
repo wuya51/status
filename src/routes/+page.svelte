@@ -8,7 +8,7 @@
   import Validators from '../ui/Validators.svelte'
   import AccountView from '../ui/AccountView.svelte'
   import BoundaryStatus from '../ui/BoundaryStatus.svelte'
-    // import GovEvents from '../ui/GovEvents.svelte'
+  // import GovEvents from '../ui/GovEvents.svelte'
 
   onMount(async () => {
     await initApi() // ONLY DO THIS ONCE ON LOAD
@@ -17,7 +17,7 @@
 
     setInterval(
       refresh,
-      30000 // 30 secs
+      30000, // 30 secs
     )
   })
 </script>
@@ -25,32 +25,32 @@
 <main class="uk-text-small">
   <div class="uk-grid">
     <div class="uk-column-1-2 uk-margin-bottom">
-    <div class="">
-      {#if $apiUrl}
-        <input
-          class="uk-input"
-          type="text"
-          placeholder={$apiUrl}
-          aria-label="Input"
-          bind:value={$apiUrl}
-        />
-        <button class="uk-button uk-button-default"
-        on:click={setApi($apiUrl)}>update url</button>
-        <button class="uk-button uk-button-default" on:click={refresh}>refresh</button>
-        note: {$apiUrlNote}
+      <div class="">
+        {#if $apiUrl}
+          <input
+            class="uk-input"
+            type="text"
+            placeholder={$apiUrl}
+            aria-label="Input"
+            bind:value={$apiUrl}
+          />
+          <button class="uk-button uk-button-default" on:click={setApi($apiUrl)}>update url</button>
+          <button class="uk-button uk-button-default" on:click={refresh}>refresh</button>
+          note: {$apiUrlNote}
+        {/if}
+      </div>
+    </div>
+    <div class="uk-flex">
+      {#if $selectedAccount && $selectedAccount.address}
+        <AccountView />
+      {:else}
+        <SystemInfo />
+        <BoundaryStatus />
+        <!-- <GovEvents/> -->
       {/if}
     </div>
-  </div>
-  <div class="uk-flex">
-    {#if $selectedAccount && $selectedAccount.address}
-      <AccountView />
-    {:else}
-      <SystemInfo />
-      <BoundaryStatus />
-      <!-- <GovEvents/> -->
-    {/if}
     <div class="uk-flex">
-        <Validators />
+      <Validators />
     </div>
   </div>
 </main>

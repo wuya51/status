@@ -13,9 +13,11 @@
       <ul>
         <li>Chain ID: {$systemInfo.chain_id}</li>
         <li>Epoch: {$systemInfo.epoch}</li>
-        <li>Ledger Version: {$systemInfo.ledger_version}</li>
-        <li>Oldest Ledger Version: {$systemInfo.oldest_ledger_version}</li>
-        <li>Fees: {$systemInfo.fees}</li>
+        <li>Ledger version: {$systemInfo.ledger_version}</li>
+        <li>Oldest ledger version: {$systemInfo.oldest_ledger_version}</li>
+        <li>Fees collected: {scaleCoin($systemInfo.fees)}</li>
+        <li>Epoch reward: {scaleCoin($systemInfo.consensus_reward)}</li>
+
       </ul>
       <ul>
         <!-- Display part 2 of the system information -->

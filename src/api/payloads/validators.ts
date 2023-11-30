@@ -18,7 +18,6 @@ export const validator_bid_payload = (address: string): ViewObj => ({
   arguments: [address],
 })
 
-
 export const validator_grade_payload = (address: string): ViewObj => ({
   function: '0x1::grade::get_validator_grade',
   type_arguments: [],

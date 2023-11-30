@@ -1,7 +1,14 @@
 import { writable, get } from 'svelte/store'
 import moment from 'moment'
 import { postViewFunc, getIndex, getAccountResource, getEventList } from '../api'
-import type { UserAccount, valData, IndexData, SystemInfo, ProofOfFee, govEventData } from '../types'
+import type {
+  UserAccount,
+  valData,
+  IndexData,
+  SystemInfo,
+  ProofOfFee,
+  govEventData,
+} from '../types'
 import * as systemPayloads from '../api/payloads/system'
 import * as validatorPayloads from '../api/payloads/validators'
 import * as commonPayloads from '../api/payloads/common'
@@ -82,7 +89,7 @@ export const populateVouchers = async (user: UserAccount): Promise<UserAccount> 
     postViewFunc(validatorPayloads.vouchers_in_val_set_payload(user.address)),
   ]
 
-  const [buddies_res, buddies_in_set_res,] = await Promise.all(requests)
+  const [buddies_res, buddies_in_set_res] = await Promise.all(requests)
 
   user.active_vouchers = buddies_in_set_res[0]
   user.all_vouchers = buddies_res[0]
@@ -91,20 +98,17 @@ export const populateVouchers = async (user: UserAccount): Promise<UserAccount> 
 }
 
 export const populateBalance = async (user: UserAccount): Promise<UserAccount> => {
-  const requests = [
-    postViewFunc(commonPayloads.account_balance_payload(user.address)),
-  ]
+  const requests = [postViewFunc(commonPayloads.account_balance_payload(user.address))]
 
   const [bal_res] = await Promise.all(requests)
 
   user.balance = {
     unlocked: bal_res[0],
     total: bal_res[1],
-  };
+  }
 
   return user
 }
-
 
 export const getSystemInfo = async () => {
   try {
@@ -116,22 +120,19 @@ export const getSystemInfo = async () => {
       postViewFunc(systemPayloads.infra_balance),
       getAccountResource('0x1', '0x1::musical_chairs::Chairs'),
       getAccountResource('0x1', '0x1::epoch_boundary::BoundaryStatus'),
+      getAccountResource('0x1', '0x1::proof_of_fee::ConsensusReward'),
     ]
-    const [
-      fees,
-      epochResponse,
-      vdfDifficulty,
-      infraBalance,
-      chairs,
-      boundaryStatus,
-    ] = await Promise.all(requests)
+    const [fees, epochResponse, vdfDifficulty, infraBalance, chairs, boundaryStatus, cr] =
+      await Promise.all(requests)
 
     const duration = moment.duration(Number(epochResponse[0]), 'seconds') // Cast to Number
     const epoch = `${Math.floor(duration.asHours())} hrs : ${duration.minutes()} mins`
     const indexData = get(indexDataStore)
 
+    console.log('cr', cr)
     // TODO(zoz): make this an interface
     const newSystemInfo: SystemInfo = {
+      consensus_reward: cr.nominal_reward,
       fees: fees[0],
       epoch_duration: epoch,
       vdf: vdfDifficulty,
@@ -157,8 +158,7 @@ export const refresh = async () => {
     getIndexData()
     getSystemInfo()
     getValidators()
-    getEventList(govEvents())
-      .then(res => govStore.set(res))
+    getEventList(govEvents()).then((res) => govStore.set(res))
   } catch (error) {
     console.error(`Failed to refresh: ${error}`)
   }

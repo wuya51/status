@@ -11,6 +11,7 @@ export interface IndexData {
 }
 
 export interface SystemInfo {
+  consensus_reward: number
   fees: number | string
   epoch_duration: string
   chain_id: number
@@ -29,7 +30,7 @@ export interface SystemInfo {
 }
 
 export interface ProofOfFee {
-  val_universe: string[],
+  val_universe: string[]
   bidders: string[]
   bids: number[]
   qualified: string[]
@@ -41,7 +42,7 @@ export interface SlowWalletBalance {
 }
 export interface UserAccount {
   address: string
-  in_val_set?: boolean,
+  in_val_set?: boolean
   active_vouchers?: string[] // Array of addresses
   all_vouchers?: string[] // Array of addresses
   balance?: SlowWalletBalance
@@ -54,10 +55,10 @@ export interface valData {
 }
 export interface govEventData {
   data: {
-    num_votes: string,
-    proposal_id: string,
-    should_pass: boolean,
-    stake_pool: string,
+    num_votes: string
+    proposal_id: string
+    should_pass: boolean
+    stake_pool: string
     voter: string
   }
 }
