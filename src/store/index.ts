@@ -50,12 +50,12 @@ export const getValidators = async () => {
 
   const [eligible, active_set] = await Promise.all(requests)
 
-  const profiles = await fetchUserAccounts(active_set[0])
+  // const profiles = await fetchUserAccounts(active_set[0])
 
   const vals: valData = {
     eligible_validators: eligible[0],
     current_list: active_set[0],
-    current_profiles: profiles,
+    current_profiles: [],
   }
   valDataStore.set(vals)
 }
@@ -64,29 +64,35 @@ export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount
   if (accounts.length == 0) throw 'no accounts'
 
   const accountsData: UserAccount[] = []
-  for (const a of accounts) {
-    const requests = [
-      postViewFunc(validatorPayloads.all_vouchers_payload(a)),
-      postViewFunc(validatorPayloads.vouchers_in_val_set_payload(a)),
-      postViewFunc(commonPayloads.account_balance_payload(a)),
-    ]
-
-    const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
-
-    const u: UserAccount = {
-      address: a,
-      active_vouchers: buddies_in_set_res[0],
-      all_vouchers: buddies_res[0],
-      balance: {
-        unlocked: bal_res[0],
-        total: bal_res[1],
-      },
+  for (const address of accounts) {
+    let u: UserAccount = {
+      address,
     }
 
+    await populateVouchers(u)
     accountsData.push(u)
   }
 
   return accountsData
+}
+
+export const populateVouchers = async (user: UserAccount): Promise<UserAccount> => {
+  const requests = [
+    postViewFunc(validatorPayloads.all_vouchers_payload(user.address)),
+    postViewFunc(validatorPayloads.vouchers_in_val_set_payload(user.address)),
+    postViewFunc(commonPayloads.account_balance_payload(user.address)),
+  ]
+
+  const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
+
+  user.active_vouchers = buddies_in_set_res[0],
+    user.all_vouchers = buddies_res[0],
+    user.balance = {
+      unlocked: bal_res[0],
+      total: bal_res[1],
+    };
+
+  return user
 }
 
 export const getSystemInfo = async () => {
@@ -97,8 +103,6 @@ export const getSystemInfo = async () => {
       postViewFunc(systemPayloads.epoch_length_payload),
       postViewFunc(systemPayloads.vdf_difficulty),
       postViewFunc(systemPayloads.infra_balance),
-      postViewFunc(systemPayloads.getPoFBidders(true)),
-      postViewFunc(systemPayloads.getPoFBidders(false)),
       getAccountResource('0x1', '0x1::musical_chairs::Chairs'),
       getAccountResource('0x1', '0x1::epoch_boundary::BoundaryStatus'),
     ]
@@ -107,8 +111,6 @@ export const getSystemInfo = async () => {
       epochResponse,
       vdfDifficulty,
       infraBalance,
-      pofBiddersFiltered,
-      pofBidders,
       chairs,
       boundaryStatus,
     ] = await Promise.all(requests)
@@ -128,14 +130,8 @@ export const getSystemInfo = async () => {
       ...indexData,
     }
 
-    const pof: ProofOfFee = {
-      bidders: pofBidders[0],
-      bids: pofBidders[1],
-      qualified: pofBiddersFiltered[0],
-    }
-
     systemInfo.set(newSystemInfo)
-    pofInfo.set(pof)
+
     // Save to local storage
     // saveToLocalStorage('systemInfo', newSystemInfo)
   } catch (error) {
@@ -151,7 +147,7 @@ export const refresh = async () => {
     getSystemInfo()
     getValidators()
     getEventList(govEvents())
-    .then(res => govStore.set(res))
+      .then(res => govStore.set(res))
   } catch (error) {
     console.error(`Failed to refresh: ${error}`)
   }

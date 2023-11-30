@@ -70,9 +70,7 @@ const fetchAPIConfig = async () => {
 export const getAccountResource = async (account: string, struct_path: string) => {
   return await api
     .get(`/accounts/${account}/resource/${struct_path}`)
-    .then((r) => {
-      return r.data.data
-    })
+    .then((r) => r.data.data)
     .catch((e) => {
       console.error(`Failed to get resource ${struct_path}, message: ${e.message}`)
       throw e
@@ -96,7 +94,7 @@ export const postViewFunc = async (payload: ViewObj) => {
       return r.data
     })
     .catch((e) => {
-      console.error(`Failed to get view ${payload}, message: ${e.message}`)
+      console.error(`Failed to get view fn: ${payload.function}, message: ${e.message}`)
       throw e
     })
 }

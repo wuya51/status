@@ -7,8 +7,9 @@
 
 <Card title="Boundary Status" style="default">
   <div slot="body">
+    <!-- {JSON.stringify($systemInfo)} -->
     {#if $systemInfo && $systemInfo.boundary_status}
-        <!-- {JSON.stringify($systemInfo.boundary_status)} -->
+
       Musical Chairs:
       <li>
         incoming_compliant:

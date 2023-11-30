@@ -29,6 +29,7 @@ export interface SystemInfo {
 }
 
 export interface ProofOfFee {
+  val_universe: string[],
   bidders: string[]
   bids: number[]
   qualified: string[]
@@ -50,8 +51,6 @@ export interface valData {
   eligible_validators: string[] // Array of addresses
   current_profiles: UserAccount[]
 }
-
-
 export interface govEventData {
   data: {
     num_votes: string,

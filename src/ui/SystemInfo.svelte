@@ -7,6 +7,7 @@
 </script>
 
 <Card title="System Information" style="primary">
+
   <div slot="body">
     {#if $systemInfo}
       <ul>

@@ -23,8 +23,6 @@
           can_resolve = r[0]
         })
       }
-
-
     })
 </script>
 

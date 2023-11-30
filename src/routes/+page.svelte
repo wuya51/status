@@ -55,8 +55,8 @@
         <SystemInfo />
         <BoundaryStatus />
         <Validators />
-        <ValidatorUniverse />
-        <GovEvents/>
+        <!-- <ValidatorUniverse /> -->
+        <!-- <GovEvents/> -->
       {/if}
     </div>
   </div>
