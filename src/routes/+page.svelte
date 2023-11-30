@@ -23,16 +23,10 @@
   })
 </script>
 
-<main class="uk-container uk-text-small">
-  <h1>status</h1>
-
-  <div class="uk-grid uk-row">
-    <div class="uk-column-1-3">
-      <button class="uk-button uk-button-default" on:click={refresh}>refresh</button>
-    </div>
-
-    <!-- api url: <a href="{$apiUrl}spec" target="_blank">{$apiUrl} </a> -->
-    <div class="uk-margin uk-column-1-3">
+<main class="uk-text-small">
+  <div class="uk-grid">
+    <div class="uk-column-1-2 uk-margin-bottom">
+    <div class="">
       {#if $apiUrl}
         <input
           class="uk-input"
@@ -41,23 +35,23 @@
           aria-label="Input"
           bind:value={$apiUrl}
         />
-        <button class="uk-button uk-button-default" on:click={setApi($apiUrl)}>update url</button>
+        <button class="uk-button uk-button-default"
+        on:click={setApi($apiUrl)}>update url</button>
+        <button class="uk-button uk-button-default" on:click={refresh}>refresh</button>
         note: {$apiUrlNote}
       {/if}
     </div>
   </div>
-
-  <div>
-    <div class="uk-flex uk-flex-wrap">
-      {#if $selectedAccount && $selectedAccount.address}
-        <AccountView />
-      {:else}
-        <SystemInfo />
-        <BoundaryStatus />
+  <div class="uk-flex">
+    {#if $selectedAccount && $selectedAccount.address}
+      <AccountView />
+    {:else}
+      <SystemInfo />
+      <BoundaryStatus />
+      <!-- <GovEvents/> -->
+    {/if}
+    <div class="uk-flex">
         <Validators />
-        <!-- <ValidatorUniverse /> -->
-        <!-- <GovEvents/> -->
-      {/if}
     </div>
   </div>
 </main>

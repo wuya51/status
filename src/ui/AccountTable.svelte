@@ -15,6 +15,7 @@
     <thead>
       <tr>
         <th>Address</th>
+        <th>Bid</th>
         <th>All Vouchers</th>
         <th>Active Vouchers</th>
         <th>Balance</th>
@@ -28,6 +29,14 @@
             <td> <button on:click={() => setAccount(a.address)} class="uk-button
             uk-button-link"> {a.address.slice(0, 5)}
             </button></td>
+            <td>
+              {#await postViewFunc(validator_grade_payload(a.address))}
+                ...
+              {:then res}
+                {res[0]} : {res[1]}/{res[2]}
+              {/await}
+
+            </td>
             <td>{(a.all_vouchers && a.all_vouchers.length) || 'no buddies'}</td>
 
             <td>{(a.active_vouchers && a.active_vouchers.length) || 'no buddies'}</td>

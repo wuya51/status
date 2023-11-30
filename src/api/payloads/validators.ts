@@ -12,6 +12,13 @@ export const eligible_validators_payload: ViewObj = {
   arguments: [],
 }
 
+export const validator_bid_payload = (address: string): ViewObj => ({
+  function: '0x1::proof_of_fee::current_bid',
+  type_arguments: [],
+  arguments: [address],
+})
+
+
 export const validator_grade_payload = (address: string): ViewObj => ({
   function: '0x1::grade::get_validator_grade',
   type_arguments: [],
