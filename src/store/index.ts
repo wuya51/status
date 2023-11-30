@@ -69,7 +69,7 @@ export const fetchUserAccounts = async (accounts: string[]): Promise<UserAccount
       address,
     }
 
-    await populateVouchers(u)
+    // await populateVouchers(u)
     accountsData.push(u)
   }
 
@@ -80,20 +80,31 @@ export const populateVouchers = async (user: UserAccount): Promise<UserAccount> 
   const requests = [
     postViewFunc(validatorPayloads.all_vouchers_payload(user.address)),
     postViewFunc(validatorPayloads.vouchers_in_val_set_payload(user.address)),
-    postViewFunc(commonPayloads.account_balance_payload(user.address)),
   ]
 
-  const [buddies_res, buddies_in_set_res, bal_res] = await Promise.all(requests)
+  const [buddies_res, buddies_in_set_res,] = await Promise.all(requests)
 
-  user.active_vouchers = buddies_in_set_res[0],
-    user.all_vouchers = buddies_res[0],
-    user.balance = {
-      unlocked: bal_res[0],
-      total: bal_res[1],
-    };
+  user.active_vouchers = buddies_in_set_res[0]
+  user.all_vouchers = buddies_res[0]
 
   return user
 }
+
+export const populateBalance = async (user: UserAccount): Promise<UserAccount> => {
+  const requests = [
+    postViewFunc(commonPayloads.account_balance_payload(user.address)),
+  ]
+
+  const [bal_res] = await Promise.all(requests)
+
+  user.balance = {
+    unlocked: bal_res[0],
+    total: bal_res[1],
+  };
+
+  return user
+}
+
 
 export const getSystemInfo = async () => {
   try {

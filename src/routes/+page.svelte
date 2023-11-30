@@ -18,7 +18,7 @@
 
     setInterval(
       refresh,
-      5000 // 5 secs
+      30000 // 30 secs
     )
   })
 </script>
